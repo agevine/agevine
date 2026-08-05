@@ -6,7 +6,7 @@ Agevine is built to bridge the gap between families and their aging parents at h
 
 ## 🚀 Features (In Development)
 - **API Gateway:** The central nervous system that ingests wearable data, manages patients, and handles Twilio voice transcripts.
-- **UI Core (Coming Soon):** The Family Dashboard built for adult children to monitor their parents' health and coordinate care.
+- **UI Core:** The Family Dashboard built with Next.js and Tailwind CSS for adult children to monitor their parents' health and coordinate care.
 - **Wearables SDK (Coming Soon):** Open-source libraries to ingest vitals from Garmin and Apple Health.
 
 ## 🏗️ Architecture Stack
@@ -36,6 +36,15 @@ npm run dev
 ```
 
 The gateway will now be listening for health data on port 3001!
+
+### 3. Start the UI Dashboard
+Navigate to the UI Core folder to start the Next.js frontend:
+```bash
+cd ui-core
+npm run dev
+```
+
+The Family Dashboard will be available at http://localhost:3000!
 
 ---
 
