@@ -1,4 +1,22 @@
-export default function Dashboard() {
+export default async function Dashboard() {
+  let vitals = {
+    heartRate: 72,
+    heartRateTrend: "2 bpm from last week (Healthy)",
+    steps: 3420,
+    stepsTrend: "On track for 5k goal",
+    checkInMessage: "I slept well and I'm having tea.",
+    checkInStatus: "All Good • 10 mins ago"
+  };
+
+  try {
+    const res = await fetch('http://localhost:3001/api/vitals', { cache: 'no-store' });
+    if (res.ok) {
+      vitals = await res.json();
+    }
+  } catch (e) {
+    console.error("Failed to fetch vitals API, using fallback data");
+  }
+
   return (
     <div className="flex min-h-screen bg-gray-50/50">
       {/* Sidebar Navigation */}
@@ -38,10 +56,10 @@ export default function Dashboard() {
               <svg className="h-4 w-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
             </div>
             <div>
-              <div className="text-4xl font-bold text-gray-900">72 <span className="text-lg font-normal text-gray-500">bpm</span></div>
+              <div className="text-4xl font-bold text-gray-900">{vitals.heartRate} <span className="text-lg font-normal text-gray-500">bpm</span></div>
               <p className="text-xs font-medium text-emerald-600 mt-2 flex items-center gap-1">
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
-                2 bpm from last week (Healthy)
+                {vitals.heartRateTrend}
               </p>
             </div>
           </div>
@@ -53,10 +71,10 @@ export default function Dashboard() {
               <svg className="h-4 w-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
             </div>
             <div>
-              <div className="text-4xl font-bold text-gray-900">3,420</div>
+              <div className="text-4xl font-bold text-gray-900">{vitals.steps.toLocaleString()}</div>
               <p className="text-xs font-medium text-emerald-600 mt-2 flex items-center gap-1">
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
-                On track for 5k goal
+                {vitals.stepsTrend}
               </p>
             </div>
           </div>
@@ -68,9 +86,9 @@ export default function Dashboard() {
               <svg className="h-4 w-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
             </div>
             <div>
-              <div className="text-2xl font-bold text-emerald-900 mt-1">"I slept well and I'm having tea."</div>
+              <div className="text-2xl font-bold text-emerald-900 mt-1">"{vitals.checkInMessage}"</div>
               <p className="text-xs font-medium text-emerald-700 mt-2">
-                All Good • 10 mins ago
+                {vitals.checkInStatus}
               </p>
             </div>
           </div>
