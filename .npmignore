@@ -1,0 +1,26 @@
+# Tests
+__tests__/
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+jest.config.js
+coverage/
+
+# CI/CD
+.github/
+.circleci/
+.travis.yml
+
+# Docs
+docs/
+CHANGELOG.md
+
+# Config files
+.eslintrc.json
+.prettierrc
+tsconfig.json
+turbo.json
+
+# Build source
+src/
