@@ -125,3 +125,6 @@ dist
 # IDEs
 .vscode/
 .idea/
+
+# Turborepo
+.turbo/
