@@ -33,6 +33,21 @@ app.post('/api/v1/voice/webhook', (req: Request, res: Response) => {
   res.status(202).json({ message: 'Voice data accepted' });
 });
 
+app.get('/', (req, res) => {
+  res.send('Agevine API Gateway is running');
+});
+
+app.get('/api/vitals', (req, res) => {
+  res.json({
+    heartRate: 72,
+    heartRateTrend: "2 bpm from last week (Healthy)",
+    steps: 3420,
+    stepsTrend: "On track for 5k goal",
+    checkInMessage: "I slept well and I'm having tea.",
+    checkInStatus: "All Good • 10 mins ago"
+  });
+});
+
 app.listen(port, () => {
   console.log(`[API Gateway] Server is running on port ${port}`);
 });

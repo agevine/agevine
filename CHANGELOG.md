@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.0.1] - 2026-08-05
 
 ### Added
+- Scaffolded `ui-core` Family Dashboard with Next.js and Tailwind CSS.
 - Initial monorepo scaffolding for the Agevine Open-Source core.
 - Set up `api-gateway` with TypeScript, Express, and `tsx` execution.
 - Added `landing-page` basic structure.
