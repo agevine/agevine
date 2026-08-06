@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { db } from "./db";
-import { vitalsLogs, voiceLogs } from "./db/schema";
+import { vitalsLogs, voiceLogs, patients } from "./db/schema";
 import { desc } from "drizzle-orm";
 
 dotenv.config();
@@ -68,6 +68,26 @@ app.get('/api/vitals', async (req, res) => {
   } catch (error) {
     console.error("Failed to fetch from DB:", error);
     res.status(500).json({ error: "Failed to fetch vitals data" });
+  }
+});
+
+app.get('/api/patients', async (req, res) => {
+  try {
+    const allPatients = await db.select().from(patients).orderBy(desc(patients.createdAt));
+    res.json(allPatients);
+  } catch (error) {
+    console.error("Failed to fetch patients:", error);
+    res.status(500).json({ error: "Failed to fetch patients" });
+  }
+});
+
+app.get('/api/voice-logs', async (req, res) => {
+  try {
+    const allLogs = await db.select().from(voiceLogs).orderBy(desc(voiceLogs.timestamp)).limit(50);
+    res.json(allLogs);
+  } catch (error) {
+    console.error("Failed to fetch voice logs:", error);
+    res.status(500).json({ error: "Failed to fetch voice logs" });
   }
 });
 
