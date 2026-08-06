@@ -48,9 +48,9 @@ Agevine relies on a powerful "push" architecture. Instead of pulling from 10 dif
 
 ```mermaid
 graph TD;
-    A[Apple Watch / Fitbit] -->|@agevine/wearables| C(Agevine API Gateway);
-    B[Retell AI / Vapi AI Caller] -->|@agevine/voice| C;
-    C -->|Drizzle ORM| D[(PostgreSQL)];
+    A[Apple Watch / Fitbit] -->|"@agevine/wearables"| C(Agevine API Gateway);
+    B[Retell AI / Vapi AI Caller] -->|"@agevine/voice"| C;
+    C -->|"Drizzle ORM"| D[(PostgreSQL)];
     D --> E[Agevine Next.js Dashboard];
 ```
 
