@@ -3,12 +3,12 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { db } from "./db";
 import { vitalsLogs, voiceLogs, patients } from "./db/schema";
-import { desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3005;
 
 // Middleware
 app.use(cors());
@@ -49,6 +49,13 @@ app.post('/api/v1/wearables/webhook', async (req: Request, res: Response): Promi
   }
 });
 
+import { AgevineVoiceClient } from "@agevine/voice";
+
+const voiceClient = new AgevineVoiceClient({
+  endpoint: `http://localhost:${port}`,
+  openAiApiKey: process.env.OPENAI_API_KEY // Optional for real TTS
+});
+
 // Voice Engine Webhook Ingestion
 app.post('/api/v1/voice/webhook', async (req: Request, res: Response): Promise<any> => {
   try {
@@ -75,21 +82,62 @@ app.post('/api/v1/voice/webhook', async (req: Request, res: Response): Promise<a
   }
 });
 
+// Synthesize Audio Endpoint (Uses @agevine/voice TTS SDK)
+app.post('/api/v1/voice/synthesize', async (req: Request, res: Response): Promise<any> => {
+  try {
+    const { text } = req.body;
+    if (!text) {
+      return res.status(400).json({ error: 'text is required' });
+    }
+
+    const audioBuffer = await voiceClient.synthesizeSpeech(text);
+    
+    res.set({
+      'Content-Type': 'audio/mpeg',
+      'Content-Length': audioBuffer.length
+    });
+    
+    return res.send(audioBuffer);
+  } catch (error) {
+    console.error('Failed to synthesize audio:', error);
+    return res.status(500).json({ error: 'Failed to synthesize audio' });
+  }
+});
+
 app.get('/', (req, res) => {
   res.send('Agevine API Gateway is running');
 });
 
 app.get('/api/vitals', async (req, res) => {
   try {
+    const pid = req.query.patientId ? parseInt(req.query.patientId as string) : null;
+    
+    let patient;
+    if (pid) {
+      const p = await db.select().from(patients).where(eq(patients.id, pid)).limit(1);
+      patient = p[0];
+    } else {
+      const p = await db.select().from(patients).orderBy(desc(patients.createdAt)).limit(1);
+      patient = p[0];
+    }
+
+    if (!patient) {
+      return res.status(404).json({ error: "No patient found" });
+    }
+
+    const patientId = patient.id;
+
     // Fetch most recent vitals log
     const recentVitals = await db.select()
       .from(vitalsLogs)
+      .where(eq(vitalsLogs.patientId, patientId))
       .orderBy(desc(vitalsLogs.timestamp))
       .limit(1);
 
     // Fetch most recent voice log
     const recentVoice = await db.select()
       .from(voiceLogs)
+      .where(eq(voiceLogs.patientId, patientId))
       .orderBy(desc(voiceLogs.timestamp))
       .limit(1);
 
@@ -97,16 +145,50 @@ app.get('/api/vitals', async (req, res) => {
     const voice = recentVoice[0];
 
     res.json({
+      patient: patient,
       heartRate: vital?.heartRate || "--",
-      heartRateTrend: "Live from DB",
+      heartRateTrend: "Live from API Gateway",
       steps: vital?.steps || 0,
-      stepsTrend: "Live from DB",
-      checkInMessage: voice?.transcript || "No recent check-in",
-      checkInStatus: voice?.sentimentScore ? `Sentiment: ${voice.sentimentScore}/100` : "No sentiment data"
+      stepsTrend: "Live from API Gateway",
+      checkInMessage: voice?.summary || voice?.transcript || "No recent check-in",
+      checkInStatus: voice?.sentimentScore ? `Sentiment: ${voice.sentimentScore}/100 • ${new Date(voice.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}` : "No sentiment data"
     });
   } catch (error) {
     console.error("Failed to fetch from DB:", error);
     res.status(500).json({ error: "Failed to fetch vitals data" });
+  }
+});
+
+app.get('/api/vitals/history', async (req, res) => {
+  try {
+    const pid = req.query.patientId ? parseInt(req.query.patientId as string) : null;
+    let patientId = pid;
+
+    if (!patientId) {
+       const p = await db.select().from(patients).orderBy(desc(patients.createdAt)).limit(1);
+       if (p.length > 0) patientId = p[0].id;
+    }
+
+    if (!patientId) return res.json([]);
+
+    // Fetch last 12 vitals logs for patient
+    const history = await db.select()
+      .from(vitalsLogs)
+      .where(eq(vitalsLogs.patientId, patientId))
+      .orderBy(desc(vitalsLogs.timestamp))
+      .limit(12);
+
+    // Recharts expects chronological order, so reverse the descending list
+    const chartData = history.reverse().map(log => ({
+      time: new Date(log.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+      heartRate: log.heartRate || 0,
+      steps: log.steps || 0
+    }));
+
+    res.json(chartData);
+  } catch (error) {
+    console.error("Failed to fetch history from DB:", error);
+    res.status(500).json({ error: "Failed to fetch vitals history" });
   }
 });
 

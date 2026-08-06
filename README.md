@@ -15,9 +15,12 @@
   <img src="./dashboard-preview.png" alt="Agevine Dashboard Preview" style="border-radius: 8px; max-width: 100%; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
 </div>
 
-Agevine is a modern, open-source platform designed to unify health data from **smartwatches** and **AI Voice Callers** into a single, beautifully designed dashboard. 
-
-It is built for families and independent caregivers who want complete ownership over their loved ones' health data without relying on expensive, proprietary SaaS solutions.
+## The Core Platform
+The core open-source platform is a monorepo that consists of:
+- **`api-gateway`**: A central Express.js / TypeScript API that acts as the source of truth, funneling all data into Postgres using Drizzle ORM.
+- **`ui-core`**: A fully responsive, modern Next.js + Tailwind CSS Family Dashboard to view your loved one's health data.
+- **`packages/wearables`**: SDKs to connect Apple HealthKit, Garmin, and Fitbit streams.
+- **`packages/voice`**: SDKs to connect Voice AI platforms (Retell, Vapi) and synthesize photorealistic speech (OpenAI TTS).
 
 ---
 
