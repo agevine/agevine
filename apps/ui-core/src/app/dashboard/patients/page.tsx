@@ -41,7 +41,7 @@ export default async function PatientsPage() {
                   <td className="px-6 py-4">{patient.phoneNumber || "Not provided"}</td>
                   <td className="px-6 py-4">{patient.timezone}</td>
                   <td className="px-6 py-4 text-right">
-                    <Link href={`/patients/${patient.id}`} className="text-emerald-600 hover:text-emerald-900 font-medium text-sm">
+                    <Link href={`/dashboard/patients/${patient.id}`} className="text-emerald-600 hover:text-emerald-900 font-medium text-sm">
                       View Profile
                     </Link>
                   </td>

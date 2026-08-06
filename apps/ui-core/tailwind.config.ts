@@ -20,6 +20,11 @@ const config: Config = {
         ring: "hsl(var(--ring))",
         muted: "hsl(var(--muted))",
         "muted-foreground": "hsl(var(--muted-foreground))",
+        cream: "#FDFBF7",
+        forest: {
+          DEFAULT: "#0F4C3A",
+          light: "#1A7057"
+        }
       },
       borderRadius: {
         lg: "var(--radius)",
