@@ -8,7 +8,7 @@ export default async function PatientProfilePage({ params }: { params: { id: str
     <div className="p-10 flex flex-col gap-8">
       <header className="flex flex-col gap-4 pb-6 border-b border-gray-200">
         <div className="flex items-center gap-2 text-sm font-medium text-emerald-700">
-          <Link href="/patients" className="hover:underline">Patients</Link>
+          <Link href="/dashboard/patients" className="hover:underline">Patients</Link>
           <span className="text-gray-400">/</span>
           <span className="text-gray-900">Profile {id}</span>
         </div>
