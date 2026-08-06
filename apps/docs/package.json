@@ -1,8 +1,6 @@
 {
   "name": "docs",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -10,8 +8,6 @@
   },
   "dependencies": {
     "next": "latest",
-    "nextra": "latest",
-    "nextra-theme-docs": "latest",
     "react": "latest",
     "react-dom": "latest"
   }
