@@ -49,10 +49,30 @@ app.post('/api/v1/wearables/webhook', async (req: Request, res: Response): Promi
   }
 });
 
-// Voice Engine Webhook Stub (To be implemented)
-app.post('/api/v1/voice/webhook', (req: Request, res: Response) => {
-  console.log('Received voice interaction ping:', req.body);
-  res.status(202).json({ message: 'Voice data accepted' });
+// Voice Engine Webhook Ingestion
+app.post('/api/v1/voice/webhook', async (req: Request, res: Response): Promise<any> => {
+  try {
+    const { patientId, transcript, summary, durationSeconds, sentimentScore } = req.body;
+    
+    if (!patientId || !transcript) {
+      return res.status(400).json({ error: 'patientId and transcript are required' });
+    }
+
+    await db.insert(voiceLogs).values({
+      patientId: parseInt(patientId),
+      transcript,
+      summary: summary || null,
+      durationSeconds: durationSeconds || null,
+      sentimentScore: sentimentScore || null,
+      timestamp: new Date()
+    });
+
+    console.log(`Inserted new voice log for patient ${patientId}`);
+    return res.status(201).json({ message: 'Voice log saved successfully' });
+  } catch (error) {
+    console.error('Failed to log voice data:', error);
+    return res.status(500).json({ error: 'Failed to process voice webhook' });
+  }
 });
 
 app.get('/', (req, res) => {

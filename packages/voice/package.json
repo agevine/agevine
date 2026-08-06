@@ -1,0 +1,17 @@
+{
+  "name": "@agevine/voice",
+  "version": "0.1.0",
+  "description": "The open-source Agevine SDK for Voice AI integration",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
