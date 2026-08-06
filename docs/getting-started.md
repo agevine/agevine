@@ -13,7 +13,16 @@ The API Gateway is the central nervous system of Agevine, handling incoming data
    ```bash
    cd api-gateway
    ```
-2. Install the dependencies:
+2. Set up your environment variables by creating a `.env` file:
+   ```env
+   # .env inside apps/api-gateway
+   DATABASE_URL="postgres://postgres:password@localhost:5432/agevine"
+   PORT=3005
+
+   # Optional: Add your OpenAI API key to enable photorealistic TTS voices in the dashboard
+   OPENAI_API_KEY="sk-..."
+   ```
+3. Install the dependencies:
    ```bash
    npm install
    ```

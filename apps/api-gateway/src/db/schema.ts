@@ -17,6 +17,9 @@ export const patients = pgTable("patients", {
   dateOfBirth: timestamp("date_of_birth"),
   phoneNumber: varchar("phone_number", { length: 20 }), // For Twilio AI voice calls
   timezone: varchar("timezone", { length: 50 }).default("UTC"),
+  doctorEmail: varchar("doctor_email", { length: 255 }),
+  deviceBattery: integer("device_battery").default(100),
+  deviceStatus: varchar("device_status", { length: 50 }).default("Online"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
