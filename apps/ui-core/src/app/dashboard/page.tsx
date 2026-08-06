@@ -1,3 +1,5 @@
+import { VitalsChart } from "@/components/VitalsChart";
+
 export default async function Dashboard() {
   let vitals = {
     heartRate: 72,
@@ -63,19 +65,22 @@ export default async function Dashboard() {
           </div>
 
           {/* AI Checkin Card */}
-          <div className="rounded-xl border border-emerald-100 bg-emerald-50/50 p-6 shadow-sm transition-all hover:shadow-md">
-            <div className="flex flex-row items-center justify-between pb-2">
-              <h3 className="text-sm font-medium text-emerald-800 uppercase tracking-wider">AI Voice Check-in</h3>
-              <svg className="h-4 w-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
-            </div>
+          <div className="rounded-xl border border-emerald-100 bg-emerald-50/50 p-6 shadow-sm transition-all hover:shadow-md flex flex-col justify-between">
             <div>
-              <div className="text-2xl font-bold text-emerald-900 mt-1">"{vitals.checkInMessage}"</div>
-              <p className="text-xs font-medium text-emerald-700 mt-2">
-                {vitals.checkInStatus}
-              </p>
+              <div className="flex flex-row items-center justify-between pb-2">
+                <h3 className="text-sm font-medium text-emerald-800 uppercase tracking-wider">AI Voice Check-in</h3>
+                <svg className="h-4 w-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+              </div>
+              <div className="text-base font-medium text-emerald-950 mt-1 italic line-clamp-4">"{vitals.checkInMessage}"</div>
             </div>
+            <p className="text-xs font-medium text-emerald-700 mt-4 pt-4 border-t border-emerald-100">
+              {vitals.checkInStatus}
+            </p>
           </div>
         </section>
+
+        {/* Interactive Charts */}
+        <VitalsChart />
       </div>
   );
 }
