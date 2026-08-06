@@ -1,7 +1,8 @@
 {
   "name": "@agevine/voice",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The open-source Agevine SDK for Voice AI integration",
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

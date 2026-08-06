@@ -1,17 +1,48 @@
 version: '3.8'
+
 services:
   db:
     image: postgres:15-alpine
-    container_name: agevine-postgres
-    restart: always
+    container_name: agevine_db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgrespassword
-      POSTGRES_DB: agevine
+      POSTGRES_USER: agevine
+      POSTGRES_PASSWORD: agevine_password
+      POSTGRES_DB: agevine_oss
     ports:
       - "5432:5432"
     volumes:
-      - agevine-db-data:/var/lib/postgresql/data
+      - agevine_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agevine -d agevine_oss"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./apps/api-gateway
+    container_name: agevine_api
+    environment:
+      DATABASE_URL: postgres://agevine:agevine_password@db:5432/agevine_oss
+      PORT: 3001
+    ports:
+      - "3001:3001"
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "npm run db:push && npm run db:seed && npm start"
+
+  ui:
+    build:
+      context: ./apps/ui-core
+    container_name: agevine_ui
+    environment:
+      ADMIN_PASSWORD: agevine
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
 
 volumes:
-  agevine-db-data:
+  agevine_pgdata:

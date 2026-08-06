@@ -1,7 +1,8 @@
 {
   "name": "@agevine/wearables",
-  "version": "0.1.0",
-  "description": "The open-source Agevine SDK for smartwatch and IoT integration",
+  "version": "0.1.1",
+  "description": "The open-source Agevine Wearables SDK for IoT integration",
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
