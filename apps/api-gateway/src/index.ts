@@ -24,10 +24,29 @@ app.get('/health', (req: Request, res: Response) => {
   });
 });
 
-// Wearable Webhook Stub (To be implemented)
-app.post('/api/v1/wearables/webhook', (req: Request, res: Response) => {
-  console.log('Received wearable data ping:', req.body);
-  res.status(202).json({ message: 'Data accepted for processing' });
+// Wearable Webhook Data Ingestion
+app.post('/api/v1/wearables/webhook', async (req: Request, res: Response): Promise<any> => {
+  try {
+    const { patientId, heartRate, steps, bloodOxygen } = req.body;
+    
+    if (!patientId) {
+      return res.status(400).json({ error: 'patientId is required' });
+    }
+
+    await db.insert(vitalsLogs).values({
+      patientId: parseInt(patientId),
+      heartRate: heartRate || null,
+      steps: steps || null,
+      bloodOxygen: bloodOxygen || null,
+      timestamp: new Date()
+    });
+
+    console.log(`Inserted new vitals for patient ${patientId}`);
+    return res.status(201).json({ message: 'Vitals data logged successfully' });
+  } catch (error) {
+    console.error('Failed to log vitals data:', error);
+    return res.status(500).json({ error: 'Failed to process webhook' });
+  }
 });
 
 // Voice Engine Webhook Stub (To be implemented)
