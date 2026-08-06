@@ -18,24 +18,7 @@ export default async function Dashboard() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50/50">
-      {/* Sidebar Navigation */}
-      <aside className="w-64 border-r bg-white flex flex-col p-6 shadow-sm">
-        <div className="mb-10 text-xl font-bold tracking-tight text-emerald-800 flex items-center gap-2">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
-          Agevine
-        </div>
-        <nav className="flex flex-col gap-2">
-          <a href="#" className="rounded-md bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700 transition-colors">Overview</a>
-          <a href="#" className="rounded-md px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors">Patients</a>
-          <a href="#" className="rounded-md px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors">AI Voice Logs</a>
-          <a href="#" className="rounded-md px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors">Alerts</a>
-          <a href="#" className="rounded-md px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors">Settings</a>
-        </nav>
-      </aside>
-
-      {/* Main Content Area */}
-      <main className="flex-1 p-10 flex flex-col gap-8">
+    <div className="p-10 flex flex-col gap-8">
         <header className="flex justify-between items-center pb-6 border-b border-gray-200">
           <div>
             <h1 className="text-3xl font-semibold tracking-tight text-gray-900 mb-1">Mom's Status</h1>
@@ -93,7 +76,6 @@ export default async function Dashboard() {
             </div>
           </div>
         </section>
-      </main>
-    </div>
+      </div>
   );
 }

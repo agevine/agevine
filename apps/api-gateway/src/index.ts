@@ -1,6 +1,9 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { db } from "./db";
+import { vitalsLogs, voiceLogs } from "./db/schema";
+import { desc } from "drizzle-orm";
 
 dotenv.config();
 
@@ -37,15 +40,35 @@ app.get('/', (req, res) => {
   res.send('Agevine API Gateway is running');
 });
 
-app.get('/api/vitals', (req, res) => {
-  res.json({
-    heartRate: 72,
-    heartRateTrend: "2 bpm from last week (Healthy)",
-    steps: 3420,
-    stepsTrend: "On track for 5k goal",
-    checkInMessage: "I slept well and I'm having tea.",
-    checkInStatus: "All Good • 10 mins ago"
-  });
+app.get('/api/vitals', async (req, res) => {
+  try {
+    // Fetch most recent vitals log
+    const recentVitals = await db.select()
+      .from(vitalsLogs)
+      .orderBy(desc(vitalsLogs.timestamp))
+      .limit(1);
+
+    // Fetch most recent voice log
+    const recentVoice = await db.select()
+      .from(voiceLogs)
+      .orderBy(desc(voiceLogs.timestamp))
+      .limit(1);
+
+    const vital = recentVitals[0];
+    const voice = recentVoice[0];
+
+    res.json({
+      heartRate: vital?.heartRate || "--",
+      heartRateTrend: "Live from DB",
+      steps: vital?.steps || 0,
+      stepsTrend: "Live from DB",
+      checkInMessage: voice?.transcript || "No recent check-in",
+      checkInStatus: voice?.sentimentScore ? `Sentiment: ${voice.sentimentScore}/100` : "No sentiment data"
+    });
+  } catch (error) {
+    console.error("Failed to fetch from DB:", error);
+    res.status(500).json({ error: "Failed to fetch vitals data" });
+  }
 });
 
 app.listen(port, () => {
