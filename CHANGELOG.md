@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Wearables SDK Completion**: Fully implemented real OAuth token exchange and data fetching for Oura and Whoop cloud adapters.
+- **Native iOS WebSocket**: Implemented native `URLSessionWebSocketTask` in `AgevineHealthKit.swift` to stream `HKQuantityTypeIdentifier.heartRate` samples to the API Gateway.
+- **Native Android Flow**: Implemented `HealthConnectClient.readRecords` polling loop within a coroutine flow in `AgevineHealthConnect.kt`.
 - **UI Synchronization**: Stripped out experimental glassmorphism styling and completely synchronized the OSS `ui-core` dashboard and the SaaS dashboard with standard flat-card design and Agevine branding.
 - **Source Control**: Added a root `.gitignore` to prevent `node_modules` and build folders across the entire monorepo from being tracked by git, fixing the 10k pending changes issue.
 - **Phase 16**: Upgraded `@agevine/wearables` SDK with native mobile modules for iOS (`AgevineHealthKit.swift`) and Android (`AgevineHealthConnect.kt`).

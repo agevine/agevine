@@ -28,21 +28,43 @@ export class OuraAdapter implements OAuthProviderAdapter {
   }
   
   async handleCallback(code: string, redirectUri: string) {
-    // Implement standard OAuth token exchange
-    return { accessToken: 'mock_token', refreshToken: 'mock_refresh' };
+    const res = await fetch("https://api.ouraring.com/oauth/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `grant_type=authorization_code&code=${code}&redirect_uri=${redirectUri}`
+    });
+    if (!res.ok) throw new Error("Oura OAuth failed");
+    return res.json();
   }
   
   async fetchVitals(accessToken: string): Promise<VitalsPayload> {
-    // Call Oura API (e.g. /v2/usercollection/daily_readiness)
-    return { patientId: 0, heartRate: 60, steps: 5000 };
+    const res = await fetch("https://api.ouraring.com/v2/usercollection/heartrate", {
+      headers: { "Authorization": `Bearer ${accessToken}` }
+    });
+    if (!res.ok) throw new Error("Failed to fetch Oura vitals");
+    const data = await res.json();
+    return { patientId: 0, heartRate: data.data?.[0]?.bpm || 0 };
   }
 }
 
 export class WhoopAdapter implements OAuthProviderAdapter {
   providerName = 'Whoop';
-  getAuthorizationUrl(redirectUri: string) { return `https://api.prod.whoop.com/oauth/oauth2/auth`; }
-  async handleCallback() { return { accessToken: 'mock', refreshToken: 'mock' }; }
-  async fetchVitals() { return { patientId: 0, heartRate: 55 }; }
+  getAuthorizationUrl(redirectUri: string) { return `https://api.prod.whoop.com/oauth/oauth2/auth?client_id=YOUR_ID&response_type=code&redirect_uri=${redirectUri}`; }
+  async handleCallback(code: string, redirectUri: string) { 
+    const res = await fetch("https://api.prod.whoop.com/oauth/oauth2/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `grant_type=authorization_code&code=${code}&redirect_uri=${redirectUri}`
+    });
+    return res.json(); 
+  }
+  async fetchVitals(accessToken: string): Promise<VitalsPayload> { 
+    const res = await fetch("https://api.prod.whoop.com/developer/v1/recovery", {
+      headers: { "Authorization": `Bearer ${accessToken}` }
+    });
+    const data = await res.json();
+    return { patientId: 0, heartRate: data.score?.resting_heart_rate || 0 }; 
+  }
 }
 
 export class GarminAdapter implements OAuthProviderAdapter {

@@ -7,6 +7,11 @@ import androidx.health.connect.client.records.StepsRecord
 import android.content.Context
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.delay
+import androidx.health.connect.client.request.ReadRecordsRequest
+import androidx.health.connect.client.time.TimeRangeFilter
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 class AgevineHealthConnect(private val context: Context) {
     
@@ -32,6 +37,24 @@ class AgevineHealthConnect(private val context: Context) {
         }
         
         println("[AgevineHealthConnect] Started native WebSocket streaming to $endpoint")
-        // Implementation would collect live sensor data and emit/send it via WS here.
+        
+        while(true) {
+            val endTime = Instant.now()
+            val startTime = endTime.minus(5, ChronoUnit.MINUTES)
+            
+            val request = ReadRecordsRequest(
+                recordType = HeartRateRecord::class,
+                timeRangeFilter = TimeRangeFilter.between(startTime, endTime)
+            )
+            
+            val response = healthConnectClient.readRecords(request)
+            for (record in response.records) {
+                // In a production app, we would push this over a WebSocket here.
+                // For now, we emit the raw record to the React Native bridge.
+                emit(record)
+            }
+            
+            delay(10000) // Poll every 10 seconds
+        }
     }
 }

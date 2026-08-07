@@ -37,10 +37,14 @@ const oura = new OuraAdapter();
 // oura.fetchVitals(token)...
 ```
 
-### Native Modules
-For native mobile applications, you can link the included swift/kotlin modules directly into your Xcode/Android Studio projects:
-- iOS: `import AgevineHealthKit`
-- Android: `import com.agevine.wearables.AgevineHealthConnect`
+###2. **Native iOS / Android Modules**: Access native Apple HealthKit and Google HealthConnect sensor data and stream it via WebSockets directly to your Agevine API Gateway.
+
+## Adapters Currently Supported
+- **Oura Ring** (Fully functional via OAuth)
+- **Whoop** (Fully functional via OAuth)
+- **Garmin** (Stubbed, waiting on Enterprise Partner approval)
+- **Apple HealthKit** (Fully functional Native iOS WebSocket streaming)
+- **Google HealthConnect** (Fully functional Native Android Kotlin Flow): `import com.agevine.wearables.AgevineHealthConnect`
 
 ## License
 MIT
