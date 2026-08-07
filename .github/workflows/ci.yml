@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    name: Build and Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        env:
+          ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: 'true'
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Cache Turborepo
+        uses: actions/cache@v3
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - name: Install Dependencies
+        env:
+          NPM_CONFIG_OPTIONAL: 'true'
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build

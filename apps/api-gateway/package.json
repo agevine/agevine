@@ -21,7 +21,8 @@
     "drizzle-orm": "^0.45.2",
     "express": "^5.2.1",
     "pg": "^8.22.0",
-    "ws": "^8.21.2"
+    "ws": "^8.21.2",
+    "@agevine/voice": "*"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
@@ -31,6 +32,6 @@
     "@types/ws": "^8.18.1",
     "drizzle-kit": "^0.31.10",
     "tsx": "^4.23.7",
-    "typescript": "^7.0.2"
+    "typescript": "^5.4.5"
   }
 }
