@@ -79,7 +79,7 @@ export function VoiceCheckInCard({ message, status }: { message: string, status:
                 key={i} 
                 className={`w-1 bg-green-500 rounded-full ${isPlaying ? 'animate-pulse' : ''}`} 
                 style={{ 
-                  height: `${isPlaying ? Math.max(20, Math.random() * 100) : 20}%`, 
+                  height: `${isPlaying ? Math.max(20, ((i * 17) % 100)) : 20}%`, 
                   animationDelay: `${i * 0.1}s`,
                   transition: 'height 0.2s ease'
                 }}>
