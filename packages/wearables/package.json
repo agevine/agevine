@@ -1,18 +1,28 @@
 {
   "name": "@agevine/wearables",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "The open-source Agevine Wearables SDK for IoT integration",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "ios",
+    "android"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch"
   },
   "devDependencies": {
+    "@types/ws": "^8.18.1",
     "typescript": "^5.0.0"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "ws": "^8.21.2"
   }
 }

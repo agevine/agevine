@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { db } from "./db";
-import { vitalsLogs, voiceLogs, patients } from "./db/schema";
+import { vitalsLogs, voiceLogs, patients, waitlist } from "./db/schema";
 import { desc, eq } from "drizzle-orm";
 
 dotenv.config();
@@ -50,6 +50,8 @@ app.post('/api/v1/wearables/webhook', async (req: Request, res: Response): Promi
 });
 
 import { AgevineVoiceClient } from "@agevine/voice";
+import { WebSocketServer, WebSocket } from "ws";
+import * as http from "http";
 
 const voiceClient = new AgevineVoiceClient({
   endpoint: `http://localhost:${port}`,
@@ -106,6 +108,30 @@ app.post('/api/v1/voice/synthesize', async (req: Request, res: Response): Promis
 
 app.get('/', (req, res) => {
   res.send('Agevine API Gateway is running');
+});
+
+// Create HTTP server from the Express app
+const server = http.createServer(app);
+
+// Initialize WebSocket server instance
+const wss = new WebSocketServer({ server });
+
+wss.on('connection', (ws: WebSocket, request) => {
+  console.log(`[WebSocket] New client connected: ${request.url}`);
+  
+  ws.on('message', (message) => {
+    try {
+      const data = JSON.parse(message.toString());
+      console.log(`[WebSocket] Received EKG data for patient ${data.patientId}: HR ${data.heartRate}`);
+      // In production, push this to a Redis stream or time-series DB for the UI to consume
+    } catch (e) {
+      console.error("[WebSocket] Failed to parse message");
+    }
+  });
+
+  ws.on('close', () => {
+    console.log("[WebSocket] Client disconnected");
+  });
 });
 
 app.get('/api/vitals', async (req, res) => {
@@ -212,6 +238,32 @@ app.get('/api/voice-logs', async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`[API Gateway] Server is running on port ${port}`);
+// SaaS Waitlist Ingestion
+app.post('/api/v1/waitlist', async (req: Request, res: Response): Promise<any> => {
+  try {
+    const { email } = req.body;
+    
+    if (!email || !email.includes('@')) {
+      return res.status(400).json({ error: 'Valid email is required' });
+    }
+
+    await db.insert(waitlist).values({
+      email: email.toLowerCase(),
+      createdAt: new Date()
+    });
+
+    console.log(`[Waitlist] New signup: ${email}`);
+    return res.status(201).json({ message: 'Successfully joined waitlist' });
+  } catch (error: any) {
+    // Check for unique constraint violation (duplicate email)
+    if (error.code === '23505') {
+      return res.status(409).json({ error: 'Email is already on the waitlist' });
+    }
+    console.error('Failed to join waitlist:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+server.listen(port, () => {
+  console.log(`[API Gateway] Server is running on port ${port} (HTTP & WebSocket)`);
 });

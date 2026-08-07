@@ -1,30 +1,58 @@
-import Link from 'next/link';
-import { Leaf } from 'lucide-react';
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { LayoutDashboard, Users, Mic, Settings, Leaf } from "lucide-react";
+
+const navigation = [
+  { name: "Overview", href: "/", icon: LayoutDashboard },
+  { name: "My Family", href: "/patients", icon: Users },
+  { name: "Voice Check-ins", href: "/voice-logs", icon: Mic },
+  { name: "Settings", href: "/settings", icon: Settings },
+];
 
 export function Sidebar() {
+  const pathname = usePathname();
+
   return (
-    <aside className="w-64 border-r bg-cream flex flex-col p-6 shadow-sm min-h-screen">
-      <div className="mb-10 text-xl font-bold tracking-tight text-forest flex items-center gap-2">
-        <Leaf className="w-6 h-6" />
-        Agevine
+    <div className="flex flex-col w-64 bg-white border-r border-gray-200 h-screen fixed">
+      <div className="flex items-center h-16 px-6 border-b border-gray-100 text-forest">
+        <Leaf className="w-6 h-6 mr-2" />
+        <span className="text-xl font-bold tracking-tight">Agevine <span className="font-normal text-gray-500">Family</span></span>
       </div>
-      <nav className="flex flex-col gap-2">
-        <Link href="/dashboard" className="rounded-md px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors">
-          Overview
-        </Link>
-        <Link href="/dashboard/patients" className="rounded-md px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors">
-          Patients
-        </Link>
-        <Link href="/dashboard/voice-logs" className="rounded-md px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors">
-          AI Voice Logs
-        </Link>
-        <Link href="/dashboard/alerts" className="rounded-md px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors">
-          Alerts
-        </Link>
-        <Link href="/dashboard/settings" className="rounded-md px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors">
-          Settings
-        </Link>
-      </nav>
-    </aside>
+      <div className="flex flex-col flex-1 overflow-y-auto px-4 py-6">
+        <nav className="flex-1 space-y-2">
+          {navigation.map((item) => {
+            const isActive = pathname === item.href || (pathname !== "/" && pathname.startsWith(item.href) && item.href !== "/");
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={`flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-colors ${
+                  isActive
+                    ? "text-primary bg-primary/10"
+                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                }`}
+              >
+                <Icon className={`mr-3 flex-shrink-0 h-5 w-5 ${isActive ? "text-primary" : "text-gray-400"}`} />
+                {item.name}
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+      <div className="p-6 border-t border-gray-100">
+        <div className="flex items-center">
+          <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+            AE
+          </div>
+          <div className="ml-3">
+            <p className="text-sm font-medium text-gray-900">Amanda Evans</p>
+            <p className="text-xs font-medium text-gray-500">Primary Caregiver</p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
