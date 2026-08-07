@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 17 CI/CD**: Added GitHub Actions workflow (`.github/workflows/ci.yml`) to automatically enforce linting, building, and caching via Turborepo on all pull requests and merges to `main`.
 - **Wearables SDK Completion**: Fully implemented real OAuth token exchange and data fetching for Oura and Whoop cloud adapters.
 - **Native iOS WebSocket**: Implemented native `URLSessionWebSocketTask` in `AgevineHealthKit.swift` to stream `HKQuantityTypeIdentifier.heartRate` samples to the API Gateway.
 - **Native Android Flow**: Implemented `HealthConnectClient.readRecords` polling loop within a coroutine flow in `AgevineHealthConnect.kt`.
