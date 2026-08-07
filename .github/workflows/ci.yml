@@ -32,6 +32,8 @@ jobs:
             ${{ runner.os }}-turbo-
 
       - name: Install Dependencies
+        env:
+          NPM_CONFIG_OPTIONAL: 'true'
         run: npm ci
 
       - name: Lint
