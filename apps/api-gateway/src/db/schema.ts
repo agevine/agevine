@@ -38,7 +38,16 @@ export const voiceLogs = pgTable("voice_logs", {
   id: serial("id").primaryKey(),
   patientId: integer("patient_id").references(() => patients.id).notNull(),
   transcript: varchar("transcript", { length: 5000 }), // The raw conversation
+  summary: varchar("summary", { length: 1000 }), // Summary of the call
+  durationSeconds: integer("duration_seconds"), // Length of the call
   sentimentScore: integer("sentiment_score"), // 1-100 score of their mood
   cognitiveFlag: boolean("cognitive_flag").default(false), // True if AI detected confusion/repetition
   timestamp: timestamp("timestamp").defaultNow().notNull(),
+});
+
+// 5. SaaS Waitlist
+export const waitlist = pgTable("waitlist", {
+  id: serial("id").primaryKey(),
+  email: varchar("email", { length: 255 }).notNull().unique(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });

@@ -30,8 +30,8 @@ The absolute easiest way to get Agevine running on your own server (or locally) 
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/agevine-oss.git
-cd agevine-oss/oss
+git clone https://github.com/agevine/agevine.git
+cd agevine
 
 # Boot up the entire stack
 docker-compose up -d
@@ -64,12 +64,17 @@ graph TD;
 Agevine comes with two MIT-licensed Node.js SDKs for integrating your devices.
 
 ### `@agevine/wearables`
-Use this SDK in your companion apps to stream live IoT vitals.
+Use this SDK in your companion apps to stream live IoT vitals. It includes OAuth adapters for Oura/Whoop and native Swift/Kotlin modules for direct Apple HealthKit integrations.
 ```typescript
-import { AgevineWearableClient } from '@agevine/wearables';
+import { AgevineClient } from '@agevine/wearables';
 
-const client = new AgevineWearableClient({ endpoint: 'http://localhost:3001' });
-await client.logVitals({ patientId: 1, heartRate: 72, steps: 3500 });
+const client = new AgevineClient({ endpoint: 'http://localhost:3001' });
+
+// REST Sync
+await client.syncVitals({ patientId: 1, heartRate: 72, steps: 3500 });
+
+// Real-Time WebSocket Streaming
+client.startStream(1, () => client.streamData({ patientId: 1, heartRate: 75 }));
 ```
 
 ### `@agevine/voice`
