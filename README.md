@@ -30,8 +30,8 @@ The absolute easiest way to get Agevine running on your own server (or locally) 
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/agevine-oss.git
-cd agevine-oss/oss
+git clone https://github.com/agevine/agevine.git
+cd agevine
 
 # Boot up the entire stack
 docker-compose up -d
