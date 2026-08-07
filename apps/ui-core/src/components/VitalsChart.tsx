@@ -10,9 +10,10 @@ export function VitalsChart({ patientId }: { patientId?: string | number }) {
   useEffect(() => {
     async function fetchHistory() {
       try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
         const url = patientId 
-          ? `http://localhost:3005/api/vitals/history?patientId=${patientId}` 
-          : `http://localhost:3005/api/vitals/history`;
+          ? `${apiUrl}/api/vitals/history?patientId=${patientId}` 
+          : `${apiUrl}/api/vitals/history`;
         const res = await fetch(url);
         if (res.ok) {
           const json = await res.json();
@@ -26,9 +27,26 @@ export function VitalsChart({ patientId }: { patientId?: string | number }) {
     }
     
     fetchHistory();
-    // Poll every 10 seconds for real-time updates
-    const interval = setInterval(fetchHistory, 10000);
-    return () => clearInterval(interval);
+    
+    // Connect to WebSockets for real-time updates
+    const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3005';
+    const ws = new WebSocket(wsUrl);
+    
+    ws.onmessage = (event) => {
+      try {
+        const newData = JSON.parse(event.data);
+        if (!patientId || newData.patientId === patientId) {
+           // Refetch or prepend the data
+           fetchHistory(); // Easiest way to sync state for now
+        }
+      } catch (e) {
+        // ignore
+      }
+    };
+
+    return () => {
+      ws.close();
+    };
   }, [patientId]);
 
   if (loading) {

@@ -3,7 +3,8 @@ import Link from 'next/link';
 export default async function PatientsPage() {
   let patients: any[] = [];
   try {
-    const res = await fetch('http://localhost:3001/api/patients', { cache: 'no-store' });
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
+    const res = await fetch(`${apiUrl}/api/patients`, { cache: 'no-store' });
     if (res.ok) {
       patients = await res.json();
     }
