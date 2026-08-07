@@ -11,16 +11,17 @@ export default async function Dashboard({ searchParams }: { searchParams: any })
   let allPatients = [];
 
   try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
     // Fetch all patients for the dropdown
-    const patientsRes = await fetch('http://localhost:3005/api/patients', { cache: 'no-store' });
+    const patientsRes = await fetch(`${apiUrl}/api/patients`, { cache: 'no-store' });
     if (patientsRes.ok) {
       allPatients = await patientsRes.json();
     }
 
     // Fetch vitals for the selected patient
     const url = patientId 
-      ? `http://localhost:3005/api/vitals?patientId=${patientId}` 
-      : `http://localhost:3005/api/vitals`;
+      ? `${apiUrl}/api/vitals?patientId=${patientId}` 
+      : `${apiUrl}/api/vitals`;
       
     const res = await fetch(url, { cache: 'no-store' });
     

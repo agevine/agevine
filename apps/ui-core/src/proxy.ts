@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // Check if we are trying to access a protected route
   if (request.nextUrl.pathname.startsWith('/dashboard')) {
     // Look for our auth cookie

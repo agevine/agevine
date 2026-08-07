@@ -12,9 +12,10 @@ export default function Overview() {
   useEffect(() => {
     async function loadData() {
       try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
         const [vitalsRes, historyRes] = await Promise.all([
-          fetch("http://localhost:3005/api/vitals"),
-          fetch("http://localhost:3005/api/vitals/history")
+          fetch(`${apiUrl}/api/vitals`),
+          fetch(`${apiUrl}/api/vitals/history`)
         ]);
         
         if (vitalsRes.ok && historyRes.ok) {

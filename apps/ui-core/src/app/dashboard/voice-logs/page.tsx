@@ -1,7 +1,8 @@
 export default async function VoiceLogsPage() {
   let logs: any[] = [];
   try {
-    const res = await fetch('http://localhost:3001/api/voice-logs', { cache: 'no-store' });
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
+    const res = await fetch(`${apiUrl}/api/voice-logs`, { cache: 'no-store' });
     if (res.ok) {
       logs = await res.json();
     }

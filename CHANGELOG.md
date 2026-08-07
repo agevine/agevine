@@ -1,5 +1,7 @@
 # Changelog
 
+# Changelog
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
@@ -8,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 18**: Overhauled the OSS dashboard (`ui-core`) to stream live vitals data using a native WebSocket client instead of polling.
+- **Phase 18**: Centralized API and WebSocket URLs using dynamic `.env` configuration.
 - **Phase 17 CI/CD**: Added GitHub Actions workflow (`.github/workflows/ci.yml`) to automatically enforce linting, building, and caching via Turborepo on all pull requests and merges to `main`.
 - **Wearables SDK Completion**: Fully implemented real OAuth token exchange and data fetching for Oura and Whoop cloud adapters.
 - **Native iOS WebSocket**: Implemented native `URLSessionWebSocketTask` in `AgevineHealthKit.swift` to stream `HKQuantityTypeIdentifier.heartRate` samples to the API Gateway.

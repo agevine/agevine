@@ -17,7 +17,8 @@ export function VoiceCheckInCard({ message, status }: { message: string, status:
       setIsPlaying(true);
       const cleanMessage = message.replace(/Patient:/g, "").replace(/AI:/g, "");
       
-      const res = await fetch("http://localhost:3005/api/v1/voice/synthesize", {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
+      const res = await fetch(`${apiUrl}/api/v1/voice/synthesize`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: cleanMessage })
