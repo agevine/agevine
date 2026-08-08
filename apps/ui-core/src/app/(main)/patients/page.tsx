@@ -1,47 +1,103 @@
-import { Battery, Activity, Smartphone, Phone, AlertCircle } from "lucide-react";
+"use client";
+
+import { useState, useEffect } from "react";
+import { Battery, Activity, Smartphone, Phone, AlertCircle, X, Trash2, Key } from "lucide-react";
 
 export default function PatientsPage() {
-  const familyMembers = [
-    {
-      id: "1",
-      name: "Margaret Doe",
-      relation: "Mother",
-      age: 72,
-      location: "San Francisco, CA",
-      status: "Online",
-      lastSync: "Just now",
-      device: { type: "Apple Watch Series 8", battery: 84 },
-      vitals: { hr: 68, steps: 5400, bp: "118/76" },
-      alerts: 0
-    },
-    {
-      id: "2",
-      name: "Robert Doe",
-      relation: "Father",
-      age: 76,
-      location: "San Francisco, CA",
-      status: "Offline",
-      lastSync: "3 hours ago",
-      device: { type: "Garmin Vivosmart", battery: 12 },
-      vitals: { hr: 82, steps: 1200, bp: "135/88" },
-      alerts: 1
+  const [patients, setPatients] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Form State
+  const [fullName, setFullName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [doctorEmail, setDoctorEmail] = useState("");
+  const [timezone, setTimezone] = useState("UTC");
+
+  const loadPatientsData = async (signal?: AbortSignal) => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
+    return await fetch(`${apiUrl}/api/patients`, { signal });
+  };
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await loadPatientsData();
+        if (!mounted) return;
+        if (res.ok) {
+          const data = await res.json();
+          if (mounted) setPatients(data);
+        }
+      } catch (e: any) {
+        if (e.name !== 'AbortError') console.error("Failed to load patients", e);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
+
+  const loadPatients = async () => {
+    try {
+      const res = await loadPatientsData();
+      if (res.ok) setPatients(await res.json());
+    } catch (e) {
+      console.error("Failed to load patients", e);
     }
-  ];
+  };
+
+  const addPatient = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
+      await fetch(`${apiUrl}/api/patients`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fullName, phoneNumber, doctorEmail, timezone })
+      });
+      setIsModalOpen(false);
+      setFullName("");
+      setPhoneNumber("");
+      setDoctorEmail("");
+      loadPatients();
+    } catch (error) {
+      console.error("Failed to add patient");
+    }
+  };
+
+  const deletePatient = async (id: number) => {
+    if (!confirm("Are you sure you want to delete this patient? All their history (vitals, voice logs, alerts) will be permanently deleted!")) return;
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
+      await fetch(`${apiUrl}/api/patients/${id}`, { method: "DELETE" });
+      loadPatients();
+    } catch (error) {
+      console.error("Failed to delete patient");
+    }
+  };
+
+  if (loading) {
+    return <div className="p-8 flex items-center justify-center min-h-[60vh]"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-forest"></div></div>;
+  }
 
   return (
     <div className="p-8 max-w-6xl mx-auto w-full">
       <div className="flex justify-between items-end mb-8">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 tracking-tight">My Family</h1>
-          <p className="text-gray-500 mt-2">Manage profiles and monitor wearable connectivity.</p>
+          <p className="text-gray-500 mt-2">Manage profiles, monitor connectivity, and pair devices.</p>
         </div>
-        <button className="px-5 py-2.5 bg-forest text-white font-medium rounded-full hover:bg-forest-light transition-colors shadow-sm">
+        <button 
+          onClick={() => setIsModalOpen(true)}
+          className="px-5 py-2.5 bg-forest text-white font-medium rounded-full hover:bg-forest-light transition-colors shadow-sm"
+        >
           + Add Member
         </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {familyMembers.map((member) => (
+        {patients.map((member) => (
           <div key={member.id} className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm relative overflow-hidden group">
             {/* Background Accent */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -z-10 group-hover:scale-110 transition-transform duration-500" />
@@ -49,63 +105,123 @@ export default function PatientsPage() {
             <div className="flex justify-between items-start mb-6">
               <div className="flex items-center">
                 <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-xl font-bold text-gray-400 mr-4">
-                  {member.name.split(' ').map(n => n[0]).join('')}
+                  {member.fullName.split(' ').map((n: string) => n[0]).join('').substring(0,2)}
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">{member.name}</h2>
-                  <p className="text-sm text-gray-500">{member.relation} • {member.age} yrs • {member.location}</p>
+                  <h2 className="text-xl font-bold text-gray-900">{member.fullName}</h2>
+                  <p className="text-sm text-gray-500">Patient ID: <span className="font-mono bg-gray-100 px-1 rounded">{member.id}</span> • {member.timezone}</p>
                 </div>
               </div>
-              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                member.status === 'Online' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-              }`}>
-                {member.status === 'Online' && <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5" />}
-                {member.status}
-              </span>
+              <div className="flex flex-col items-end gap-2">
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  member.deviceStatus === 'Online' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                }`}>
+                  {member.deviceStatus === 'Online' && <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5" />}
+                  {member.deviceStatus}
+                </span>
+                <button 
+                  onClick={() => deletePatient(member.id)}
+                  className="text-red-400 hover:text-red-600 p-1"
+                  title="Delete Patient"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
-            {member.alerts > 0 && (
-              <div className="mb-6 p-3 bg-orange-50 border border-orange-100 rounded-xl flex items-start">
-                <AlertCircle className="w-5 h-5 text-orange-500 mr-2 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-orange-800">Device battery is critically low. AI Voice check-in will ask him to charge it today.</p>
-              </div>
-            )}
-
             <div className="grid grid-cols-3 gap-4 mb-6">
-              <div className="p-4 bg-gray-50 rounded-2xl">
-                <p className="text-xs text-gray-500 font-medium mb-1 uppercase tracking-wider">Heart Rate</p>
-                <p className="text-xl font-bold text-gray-900">{member.vitals.hr} <span className="text-sm font-normal text-gray-500">bpm</span></p>
+              <div className="p-4 bg-gray-50 rounded-2xl flex flex-col items-center justify-center text-center">
+                <Phone className="w-5 h-5 text-gray-400 mb-2" />
+                <p className="text-xs font-bold text-gray-900 truncate w-full">{member.phoneNumber || 'No phone'}</p>
               </div>
-              <div className="p-4 bg-gray-50 rounded-2xl">
-                <p className="text-xs text-gray-500 font-medium mb-1 uppercase tracking-wider">Steps</p>
-                <p className="text-xl font-bold text-gray-900">{member.vitals.steps}</p>
+              <div className="p-4 bg-gray-50 rounded-2xl flex flex-col items-center justify-center text-center">
+                <Activity className="w-5 h-5 text-gray-400 mb-2" />
+                <p className="text-xs font-bold text-gray-900 truncate w-full">{member.doctorEmail || 'No doc email'}</p>
               </div>
-              <div className="p-4 bg-gray-50 rounded-2xl">
-                <p className="text-xs text-gray-500 font-medium mb-1 uppercase tracking-wider">Blood Pres.</p>
-                <p className="text-xl font-bold text-gray-900">{member.vitals.bp}</p>
+              <div className="p-4 bg-gray-50 rounded-2xl flex flex-col items-center justify-center text-center">
+                <Key className="w-5 h-5 text-gray-400 mb-2" />
+                <p className="text-xs font-bold text-gray-900 truncate w-full">API Key Gen</p>
               </div>
             </div>
 
             <div className="flex items-center justify-between pt-4 border-t border-gray-100">
               <div className="flex items-center text-sm text-gray-500">
                 <Smartphone className="w-4 h-4 mr-2" />
-                {member.device.type}
+                Apple Watch / Oura
                 <div className="mx-2 w-1 h-1 bg-gray-300 rounded-full" />
-                <Battery className={`w-4 h-4 mr-1 ${member.device.battery < 20 ? 'text-red-500' : 'text-emerald-500'}`} />
-                <span className={member.device.battery < 20 ? 'text-red-500 font-medium' : ''}>{member.device.battery}%</span>
-              </div>
-              <div className="flex space-x-2">
-                <button className="p-2 text-gray-400 hover:text-primary bg-white border border-gray-200 rounded-full shadow-sm hover:border-primary/50 transition-colors">
-                  <Activity className="w-4 h-4" />
-                </button>
-                <button className="p-2 text-gray-400 hover:text-primary bg-white border border-gray-200 rounded-full shadow-sm hover:border-primary/50 transition-colors">
-                  <Phone className="w-4 h-4" />
-                </button>
+                <Battery className={`w-4 h-4 mr-1 ${member.deviceBattery < 20 ? 'text-red-500' : 'text-emerald-500'}`} />
+                <span className={member.deviceBattery < 20 ? 'text-red-500 font-medium' : ''}>{member.deviceBattery}%</span>
               </div>
             </div>
           </div>
         ))}
+        {patients.length === 0 && (
+          <div className="col-span-1 md:col-span-2 py-16 text-center border-2 border-dashed border-gray-200 rounded-3xl">
+            <h3 className="text-lg font-bold text-gray-900 mb-2">No patients added yet</h3>
+            <p className="text-gray-500">Click the button above to add a family member to Agevine.</p>
+          </div>
+        )}
       </div>
+
+      {/* Add Patient Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full relative shadow-xl">
+            <button 
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-6 right-6 text-gray-400 hover:text-gray-600"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Add Family Member</h2>
+            <form onSubmit={addPatient} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Name</label>
+                <input 
+                  type="text" value={fullName} onChange={e => setFullName(e.target.value)} required
+                  className="w-full border border-gray-200 rounded-lg p-3 text-sm font-medium focus:ring-2 focus:ring-forest outline-none"
+                  placeholder="e.g. Margaret Doe"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Phone Number</label>
+                <input 
+                  type="tel" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)}
+                  className="w-full border border-gray-200 rounded-lg p-3 text-sm font-medium focus:ring-2 focus:ring-forest outline-none"
+                  placeholder="+15551234567"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Doctor's Email</label>
+                <input 
+                  type="email" value={doctorEmail} onChange={e => setDoctorEmail(e.target.value)}
+                  className="w-full border border-gray-200 rounded-lg p-3 text-sm font-medium focus:ring-2 focus:ring-forest outline-none"
+                  placeholder="doctor@hospital.com"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Timezone</label>
+                <select 
+                  value={timezone} onChange={e => setTimezone(e.target.value)}
+                  className="w-full border border-gray-200 rounded-lg p-3 text-sm font-medium focus:ring-2 focus:ring-forest outline-none"
+                >
+                  <option value="UTC">UTC</option>
+                  <option value="America/New_York">Eastern Time (ET)</option>
+                  <option value="America/Chicago">Central Time (CT)</option>
+                  <option value="America/Denver">Mountain Time (MT)</option>
+                  <option value="America/Los_Angeles">Pacific Time (PT)</option>
+                </select>
+              </div>
+              <button 
+                type="submit"
+                className="w-full bg-forest hover:bg-[#0F4C3A] text-white font-bold py-3 px-4 rounded-xl transition-colors shadow-sm mt-6"
+              >
+                Create Profile
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

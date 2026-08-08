@@ -15,27 +15,48 @@ export default function AlertsPage() {
   const [channel, setChannel] = useState("sms");
   const [destination, setDestination] = useState("");
 
-  const loadAlerts = async () => {
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
-      // Mock patientId=1 for demo purposes
-      const [rulesRes, historyRes] = await Promise.all([
-        fetch(`${apiUrl}/api/alerts/rules?patientId=1`),
-        fetch(`${apiUrl}/api/alerts/history?patientId=1`)
-      ]);
-      
-      if (rulesRes.ok) setRules(await rulesRes.json());
-      if (historyRes.ok) setHistory(await historyRes.json());
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
+  const loadAlertsData = async (signal?: AbortSignal) => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
+    const [rulesRes, historyRes] = await Promise.all([
+      fetch(`${apiUrl}/api/alerts/rules?patientId=1`, { signal }),
+      fetch(`${apiUrl}/api/alerts/history?patientId=1`, { signal })
+    ]);
+    return { rulesRes, historyRes };
   };
 
   useEffect(() => {
-    loadAlerts();
+    let mounted = true;
+    (async () => {
+      try {
+        const { rulesRes, historyRes } = await loadAlertsData();
+        if (!mounted) return;
+        
+        if (rulesRes.ok) {
+          const rulesData = await rulesRes.json();
+          if (mounted) setRules(rulesData);
+        }
+        if (historyRes.ok) {
+          const historyData = await historyRes.json();
+          if (mounted) setHistory(historyData);
+        }
+      } catch (e: any) {
+        if (e.name !== 'AbortError') console.error(e);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => { mounted = false; };
   }, []);
+
+  const loadAlerts = async () => {
+    try {
+      const { rulesRes, historyRes } = await loadAlertsData();
+      if (rulesRes.ok) setRules(await rulesRes.json());
+      if (historyRes.ok) setHistory(await historyRes.json());
+    } catch (e: any) {
+      console.error(e);
+    }
+  };
 
   const createRule = async (e: React.FormEvent) => {
     e.preventDefault();
