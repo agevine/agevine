@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 21: Settings & System Configurations**: Dedicated settings page for updating the caregiver profile, verifying active `.env` integrations (Twilio, SendGrid, OpenAI), and securely exporting all Agevine data to JSON.
 - **Phase 20: Patient Management UI**: Full CRUD interface in the dashboard for managing family members. Includes an Add Member modal and direct database synchronization.
 - **Phase 20: Patient API Routes**: Added `POST /api/patients` and a cascading `DELETE /api/patients/:id` to `api-gateway`.
 - **Phase 19: Alerts & Notifications Engine**: Configurable patient alerts for vitals thresholds (e.g. Heart Rate > 120 bpm) and cognitive/fall flags. Dispatches via Email, SMS, or Webhook.

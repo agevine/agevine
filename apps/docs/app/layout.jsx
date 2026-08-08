@@ -17,6 +17,7 @@ export default function RootLayout({ children }) {
             <h3 style={{ fontSize: '0.9rem', textTransform: 'uppercase', color: '#666', letterSpacing: '0.05em' }}>Overview</h3>
             <a href="/" style={{ textDecoration: 'none', color: '#111', fontWeight: '500' }}>Introduction & Quickstart</a>
             <a href="/patients" style={{ textDecoration: 'none', color: '#111', fontWeight: '500' }}>Patient Management</a>
+            <a href="/settings" style={{ textDecoration: 'none', color: '#111', fontWeight: '500' }}>Settings & Data</a>
             <h3 style={{ fontSize: '0.9rem', textTransform: 'uppercase', color: '#666', letterSpacing: '0.05em', marginTop: '1rem' }}>Core Systems</h3>
             <a href="/alerts" style={{ textDecoration: 'none', color: '#111', fontWeight: '500' }}>Alerts Engine</a>
             <h3 style={{ fontSize: '0.9rem', textTransform: 'uppercase', color: '#666', letterSpacing: '0.05em', marginTop: '1rem' }}>SDK Reference</h3>
