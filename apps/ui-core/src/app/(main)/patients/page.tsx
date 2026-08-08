@@ -14,23 +14,38 @@ export default function PatientsPage() {
   const [doctorEmail, setDoctorEmail] = useState("");
   const [timezone, setTimezone] = useState("UTC");
 
-  const loadPatients = async () => {
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
-      const res = await fetch(`${apiUrl}/api/patients`);
-      if (res.ok) {
-        setPatients(await res.json());
-      }
-    } catch (e) {
-      console.error("Failed to load patients", e);
-    } finally {
-      setLoading(false);
-    }
+  const loadPatientsData = async (signal?: AbortSignal) => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
+    return await fetch(`${apiUrl}/api/patients`, { signal });
   };
 
   useEffect(() => {
-    loadPatients();
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await loadPatientsData();
+        if (!mounted) return;
+        if (res.ok) {
+          const data = await res.json();
+          if (mounted) setPatients(data);
+        }
+      } catch (e: any) {
+        if (e.name !== 'AbortError') console.error("Failed to load patients", e);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => { mounted = false; };
   }, []);
+
+  const loadPatients = async () => {
+    try {
+      const res = await loadPatientsData();
+      if (res.ok) setPatients(await res.json());
+    } catch (e) {
+      console.error("Failed to load patients", e);
+    }
+  };
 
   const addPatient = async (e: React.FormEvent) => {
     e.preventDefault();
