@@ -349,6 +349,52 @@ app.get('/api/patients', async (req, res) => {
   }
 });
 
+app.post('/api/patients', async (req: Request, res: Response): Promise<any> => {
+  try {
+    const { fullName, phoneNumber, timezone, doctorEmail } = req.body;
+    if (!fullName) {
+      return res.status(400).json({ error: 'Full name is required' });
+    }
+
+    const result = await db.insert(patients).values({
+      userId: 1, // Defaulting to caregiver user 1 for now
+      fullName,
+      phoneNumber,
+      timezone: timezone || 'UTC',
+      doctorEmail,
+      deviceBattery: 100,
+      deviceStatus: 'Online',
+      createdAt: new Date()
+    }).returning();
+
+    return res.status(201).json(result[0]);
+  } catch (error) {
+    console.error("Failed to create patient:", error);
+    res.status(500).json({ error: "Failed to create patient" });
+  }
+});
+
+app.delete('/api/patients/:id', async (req: Request, res: Response): Promise<any> => {
+  try {
+    const id = parseInt(req.params.id);
+    
+    // Hard delete: delete all telemetry data first to respect foreign key constraints
+    await db.delete(vitalsLogs).where(eq(vitalsLogs.patientId, id));
+    await db.delete(voiceLogs).where(eq(voiceLogs.patientId, id));
+    await db.delete(iotEvents).where(eq(iotEvents.patientId, id));
+    await db.delete(alertEvents).where(eq(alertEvents.patientId, id));
+    await db.delete(alertRules).where(eq(alertRules.patientId, id));
+    
+    // Delete the patient
+    await db.delete(patients).where(eq(patients.id, id));
+    
+    return res.json({ success: true });
+  } catch (error) {
+    console.error("Failed to delete patient:", error);
+    res.status(500).json({ error: "Failed to delete patient" });
+  }
+});
+
 app.get('/api/voice-logs', async (req, res) => {
   try {
     const allLogs = await db.select().from(voiceLogs).orderBy(desc(voiceLogs.timestamp)).limit(50);

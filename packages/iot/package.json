@@ -1,6 +1,6 @@
 {
   "name": "@agevine/iot",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Open-source Agevine IoT SDK for smart home sensors, fall detection mats, and BLE devices",
   "license": "MIT",
   "main": "dist/index.js",
