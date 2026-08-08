@@ -49,7 +49,7 @@ That's it!
 
 ## 🏗️ Architecture
 
-Agevine relies on a powerful "push" architecture. Instead of pulling from 10 different fragmented APIs, Agevine provides two simple NPM packages that you can drop into any app to push data directly into your self-hosted dashboard.
+Agevine relies on a powerful "push" architecture. Instead of pulling from 10 different fragmented APIs, Agevine provides three simple NPM packages that you can drop into any app to push data directly into your self-hosted dashboard.
 
 ```mermaid
 graph TD;
@@ -64,7 +64,7 @@ graph TD;
 
 ## 📦 The SDKs
 
-Agevine comes with two MIT-licensed Node.js SDKs for integrating your devices.
+Agevine comes with three MIT-licensed Node.js SDKs for integrating your devices.
 
 ### `@agevine/wearables`
 Use this SDK in your companion apps to stream live IoT vitals. It includes OAuth adapters for Oura/Whoop and native Swift/Kotlin modules for direct Apple HealthKit integrations.
