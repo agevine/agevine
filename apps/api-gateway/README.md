@@ -32,3 +32,22 @@ This is the core backend service for the Agevine Open-Source ecosystem. It is a 
    npm run dev
    ```
    The server will start on `http://localhost:3001` with hot-reloading enabled.
+
+## ⚡ 1-Click Installation (Docker)
+
+The absolute easiest way to get Agevine running on your own server (or locally) is using Docker Compose. It automatically spins up the PostgreSQL database, the Node.js API Gateway, and the Next.js Dashboard.
+
+```bash
+# Clone the repository
+git clone https://github.com/agevine/agevine.git
+cd agevine
+
+# Boot up the entire stack
+docker-compose up -d
+```
+
+That's it! 
+- Your dashboard is now live at `http://localhost:3000`
+- Your API Gateway is now live at `http://localhost:3001`
+
+**Default Admin Password**: `agevine`

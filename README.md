@@ -21,6 +21,7 @@ The core open-source platform is a monorepo that consists of:
 - **`ui-core`**: A fully responsive, modern Next.js + Tailwind CSS Family Dashboard to view your loved one's health data.
 - **`packages/wearables`**: SDKs to connect Apple HealthKit, Garmin, and Fitbit streams.
 - **`packages/voice`**: SDKs to connect Voice AI platforms (Retell, Vapi) and synthesize photorealistic speech (OpenAI TTS).
+- **`packages/iot`**: SDKs to integrate smart home sensors, fall mats, and BLE devices via MQTT.
 
 ---
 
@@ -40,6 +41,7 @@ docker-compose up -d
 That's it! 
 - Your dashboard is now live at `http://localhost:3000`
 - Your API Gateway is now live at `http://localhost:3001`
+- Your Docs is now live at `http://localhost:3002`
 
 **Default Admin Password**: `agevine`
 
@@ -53,6 +55,7 @@ Agevine relies on a powerful "push" architecture. Instead of pulling from 10 dif
 graph TD;
     A[Apple Watch / Fitbit] -->|"@agevine/wearables"| C(Agevine API Gateway);
     B[Retell AI / Vapi AI Caller] -->|"@agevine/voice"| C;
+    F[Smart Sensors / Fall Mats] -->|"@agevine/iot"| C;
     C -->|"Drizzle ORM"| D[(PostgreSQL)];
     D --> E[Agevine Next.js Dashboard];
 ```
@@ -84,6 +87,15 @@ import { AgevineVoiceClient } from '@agevine/voice';
 
 const client = new AgevineVoiceClient({ endpoint: 'http://localhost:3001' });
 await client.logCall({ patientId: 1, sentimentScore: 85, summary: "Feeling well." });
+```
+
+### `@agevine/iot`
+Use this SDK to route MQTT messages from your smart home hubs into Agevine.
+```typescript
+import { IOTClient } from '@agevine/iot';
+
+const client = new IOTClient({ endpoint: 'http://localhost:3001' });
+await client.logSensorEvent({ patientId: 1, deviceType: "motion_sensor", reading: 1 });
 ```
 
 ---
