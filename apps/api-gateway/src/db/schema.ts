@@ -45,7 +45,42 @@ export const voiceLogs = pgTable("voice_logs", {
   timestamp: timestamp("timestamp").defaultNow().notNull(),
 });
 
-// 5. SaaS Waitlist
+// 5. IoT Events (Smart Home Sensors, Fall Mats, etc.)
+export const iotEvents = pgTable("iot_events", {
+  id: serial("id").primaryKey(),
+  patientId: integer("patient_id").references(() => patients.id).notNull(),
+  sensorType: varchar("sensor_type", { length: 100 }).notNull(), // 'bed_sensor', 'fall_mat', 'motion'
+  eventType: varchar("event_type", { length: 100 }).notNull(), // 'trigger', 'reading', 'alert'
+  value: varchar("value", { length: 255 }), // e.g. 'true', 'detected', '35.5'
+  metadata: varchar("metadata", { length: 2000 }), // JSON string for extra data
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+});
+
+// 6. Alert Rules (Configurable thresholds)
+export const alertRules = pgTable("alert_rules", {
+  id: serial("id").primaryKey(),
+  patientId: integer("patient_id").references(() => patients.id).notNull(),
+  metric: varchar("metric", { length: 50 }).notNull(), // heartRate, steps, bloodOxygen, cognitiveFlag, fallDetected
+  condition: varchar("condition", { length: 20 }).notNull(), // gt, lt, eq
+  threshold: varchar("threshold", { length: 255 }).notNull(), // Value to compare against
+  channel: varchar("channel", { length: 50 }).notNull(), // email, sms, webhook
+  destination: varchar("destination", { length: 255 }).notNull(), // email address, phone number, or URL
+  enabled: boolean("enabled").default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// 7. Alert Events (Audit log of sent alerts)
+export const alertEvents = pgTable("alert_events", {
+  id: serial("id").primaryKey(),
+  ruleId: integer("rule_id").references(() => alertRules.id).notNull(),
+  patientId: integer("patient_id").references(() => patients.id).notNull(),
+  message: varchar("message", { length: 2000 }).notNull(),
+  channel: varchar("channel", { length: 50 }).notNull(),
+  status: varchar("status", { length: 50 }).notNull(), // 'sent', 'failed'
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// 8. SaaS Waitlist
 export const waitlist = pgTable("waitlist", {
   id: serial("id").primaryKey(),
   email: varchar("email", { length: 255 }).notNull().unique(),

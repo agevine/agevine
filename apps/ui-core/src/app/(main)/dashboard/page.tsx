@@ -129,6 +129,32 @@ export default async function Dashboard({ searchParams }: { searchParams: any })
       </div>
 
       <VitalsChart patientId={patientId} />
+        
+      <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 mt-6">
+        <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+          <h2 className="font-bold text-gray-900">Recent Activity Log</h2>
+          <button className="text-sm text-[#059669] font-bold hover:underline">View All</button>
+        </div>
+        <div className="divide-y divide-gray-100">
+          {[
+            { title: "Mom's Apple Watch Synced", time: "10 mins ago", type: "sync", desc: "Heart rate and steps successfully uploaded." },
+            { title: "AI Voice Check-in Completed", time: "2 hours ago", type: "voice", desc: "Dad reported feeling well and took his morning medication." },
+            { title: "Irregular Heart Rate Detected", time: "Yesterday", type: "alert", desc: "Mom's heart rate spiked to 110bpm during resting period." }
+          ].map((activity, i) => (
+            <div key={i} className="px-6 py-4 flex items-start hover:bg-gray-50 transition-colors cursor-pointer">
+              <div className={`mt-1 h-2.5 w-2.5 rounded-full mr-4 flex-shrink-0 ${activity.type === 'alert' ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]' : activity.type === 'voice' ? 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]' : 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]'}`} />
+              <div className="flex-1">
+                <p className="font-bold text-gray-900">{activity.title}</p>
+                <p className="text-sm text-gray-500 mt-1 leading-relaxed">{activity.desc}</p>
+              </div>
+              <div className="flex items-center text-gray-400 text-xs font-semibold whitespace-nowrap ml-4">
+                {activity.time}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
     </div>
   );
 }

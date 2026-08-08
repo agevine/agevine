@@ -10,6 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 19: Alerts & Notifications Engine**: Configurable patient alerts for vitals thresholds (e.g. Heart Rate > 120 bpm) and cognitive/fall flags. Dispatches via Email, SMS, or Webhook.
+- **Phase 19: `@agevine/iot` SDK**: A brand new open-source SDK for integrating non-wearable smart home sensors (fall detection mats, BLE devices) with MQTT and Webhook adapters.
+- **Alerts Dashboard**: Added a new `/alerts` view in the UI core to manage rules and view alert history.
+- **IoT Webhooks API**: Real-time event ingestion route at `/api/v1/iot/webhook`.
+
+### Changed
+- Dashboard sidebar now includes the Alerts Engine icon.
+- `evaluateAlerts` logic automatically fires asynchronously after Wearables webhook ingestion.
+
+## [Phase 18] - 2026-08-07### Added
 - **Phase 18**: Overhauled the OSS dashboard (`ui-core`) to stream live vitals data using a native WebSocket client instead of polling.
 - **Phase 18**: Centralized API and WebSocket URLs using dynamic `.env` configuration.
 - **Phase 17 CI/CD**: Added GitHub Actions workflow (`.github/workflows/ci.yml`) to automatically enforce linting, building, and caching via Turborepo on all pull requests and merges to `main`.
@@ -29,13 +39,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `POST /api/v1/voice/synthesize` endpoint to API Gateway to stream dynamic MP3 audio to the dashboard.
 - Replaced the browser's native `window.speechSynthesis` with a real HTML5 `<audio>` player inside the dashboard's AI Voice Check-in Card.
 
-## [0.0.1] - 2026-08-05
-
-### Added
-- Scaffolded `ui-core` Family Dashboard with Next.js and Tailwind CSS.
-- Initial monorepo scaffolding for the Agevine Open-Source core.
-- Set up `api-gateway` with TypeScript, Express, and `tsx` execution.
-- Added `landing-page` basic structure.
 - Initialized `.gitignore`, `LICENSE` (AGPL-3.0), and `.npmignore`.
 
 ### Changed
