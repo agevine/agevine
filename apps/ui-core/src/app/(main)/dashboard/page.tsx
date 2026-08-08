@@ -1,6 +1,7 @@
 import { VitalsChart } from "@/components/VitalsChart";
 import { PatientSelector } from "@/components/PatientSelector";
 import { VoiceCheckInCard } from "@/components/VoiceCheckInCard";
+import { ContactDoctorButton } from "@/components/ContactDoctorButton";
 
 export default async function Dashboard({ searchParams }: { searchParams: any }) {
   // Await searchParams for Next.js 15+ compatibility
@@ -79,9 +80,7 @@ export default async function Dashboard({ searchParams }: { searchParams: any })
           
           <PatientSelector patients={allPatients} currentPatientId={patient?.id} />
 
-          <a href={`mailto:${patient?.doctorEmail || 'doctor@example.com'}`} className="px-4 py-2 bg-[#059669] text-white rounded-lg font-semibold shadow-sm hover:bg-[#047857] transition-colors flex items-center justify-center">
-            Contact Doctor
-          </a>
+          <ContactDoctorButton email={patient?.doctorEmail || 'doctor@example.com'} />
         </div>
       </div>
 
