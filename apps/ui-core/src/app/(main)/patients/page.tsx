@@ -7,6 +7,7 @@ export default function PatientsPage() {
   const [patients, setPatients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
 
   // Form State
   const [fullName, setFullName] = useState("");
@@ -67,13 +68,14 @@ export default function PatientsPage() {
   };
 
   const deletePatient = async (id: number) => {
-    if (!confirm("Are you sure you want to delete this patient? All their history (vitals, voice logs, alerts) will be permanently deleted!")) return;
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
       await fetch(`${apiUrl}/api/patients/${id}`, { method: "DELETE" });
       loadPatients();
     } catch (error) {
       console.error("Failed to delete patient");
+    } finally {
+      setDeleteConfirmId(null);
     }
   };
 
@@ -120,7 +122,7 @@ export default function PatientsPage() {
                   {member.deviceStatus}
                 </span>
                 <button 
-                  onClick={() => deletePatient(member.id)}
+                  onClick={() => setDeleteConfirmId(member.id)}
                   className="text-red-400 hover:text-red-600 p-1"
                   title="Delete Patient"
                 >
@@ -219,6 +221,32 @@ export default function PatientsPage() {
                 Create Profile
               </button>
             </form>
+          </div>
+        </div>
+      )}
+      {/* Delete Confirmation Modal */}
+      {deleteConfirmId !== null && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-xl text-center relative">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <AlertCircle className="w-8 h-8 text-red-500" />
+            </div>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">Delete Patient?</h2>
+            <p className="text-gray-500 text-sm mb-6">Are you sure you want to delete this patient? All their history (vitals, voice logs, alerts) will be permanently deleted!</p>
+            <div className="flex gap-3">
+              <button 
+                onClick={() => setDeleteConfirmId(null)}
+                className="flex-1 py-3 px-4 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={() => deletePatient(deleteConfirmId)}
+                className="flex-1 py-3 px-4 rounded-xl font-bold text-white bg-red-500 hover:bg-red-600 transition-colors"
+              >
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       )}
