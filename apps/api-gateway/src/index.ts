@@ -376,7 +376,7 @@ app.post('/api/patients', async (req: Request, res: Response): Promise<any> => {
 
 app.delete('/api/patients/:id', async (req: Request, res: Response): Promise<any> => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id as string);
     
     // Hard delete: delete all telemetry data first to respect foreign key constraints
     await db.delete(vitalsLogs).where(eq(vitalsLogs.patientId, id));
@@ -449,7 +449,7 @@ app.get('/api/alerts/rules', async (req, res) => {
 
 app.delete('/api/alerts/rules/:id', async (req: Request, res: Response): Promise<any> => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id as string);
     await db.delete(alertRules).where(eq(alertRules.id, id));
     return res.json({ success: true });
   } catch (error) {
