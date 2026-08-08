@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { db } from "./db";
-import { vitalsLogs, voiceLogs, patients, waitlist, alertRules, alertEvents, iotEvents } from "./db/schema";
+import { vitalsLogs, voiceLogs, patients, waitlist, alertRules, alertEvents, iotEvents, users } from "./db/schema";
 import { desc, eq, and } from "drizzle-orm";
 
 dotenv.config();
@@ -471,6 +471,59 @@ app.get('/api/alerts/history', async (req, res) => {
   } catch (error) {
     console.error("Failed to fetch alert history:", error);
     res.status(500).json({ error: "Failed to fetch alert history" });
+  }
+});
+
+// Settings & System Configurations
+app.get('/api/user', async (req, res) => {
+  try {
+    const caregiver = await db.select().from(users).where(eq(users.id, 1)).limit(1);
+    res.json(caregiver[0] || null);
+  } catch (error) {
+    console.error("Failed to fetch user:", error);
+    res.status(500).json({ error: "Failed to fetch user" });
+  }
+});
+
+app.put('/api/user', async (req: Request, res: Response): Promise<any> => {
+  try {
+    const { fullName, email } = req.body;
+    if (!fullName || !email) return res.status(400).json({ error: "Missing fields" });
+    
+    await db.update(users).set({ fullName, email }).where(eq(users.id, 1));
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Failed to update user:", error);
+    res.status(500).json({ error: "Failed to update user" });
+  }
+});
+
+app.get('/api/system/status', (req, res) => {
+  res.json({
+    twilio: !!process.env.TWILIO_ACCOUNT_SID,
+    sendgrid: !!process.env.SENDGRID_API_KEY,
+    openai: !!process.env.OPENAI_API_KEY
+  });
+});
+
+app.get('/api/system/export', async (req, res) => {
+  try {
+    const allPatients = await db.select().from(patients);
+    const allVitals = await db.select().from(vitalsLogs);
+    const allVoiceLogs = await db.select().from(voiceLogs);
+    const allAlerts = await db.select().from(alertEvents);
+
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Disposition', 'attachment; filename="agevine-export.json"');
+    res.send(JSON.stringify({
+      patients: allPatients,
+      vitals: allVitals,
+      voice: allVoiceLogs,
+      alerts: allAlerts
+    }, null, 2));
+  } catch (error) {
+    console.error("Failed to export system data:", error);
+    res.status(500).json({ error: "Failed to export data" });
   }
 });
 
