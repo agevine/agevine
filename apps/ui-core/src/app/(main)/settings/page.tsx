@@ -59,6 +59,7 @@ export default function SettingsPage() {
       });
       if (res.ok) {
         setProfileMessage("Profile updated successfully.");
+        window.dispatchEvent(new Event('userProfileUpdated'));
       } else {
         setProfileMessage("Failed to update profile.");
       }
