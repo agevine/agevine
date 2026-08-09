@@ -67,10 +67,10 @@ export function SentimentChart({ logs }: { logs: any[] }) {
             <Tooltip 
               contentStyle={{ borderRadius: '12px', border: '1px solid #f3f4f6', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
               labelStyle={{ fontWeight: 'bold', color: '#374151', marginBottom: '4px' }}
-              formatter={(value: any, name: string | undefined) => {
+              formatter={(value: number | string | ReadonlyArray<number | string> | undefined, name: string | number | undefined) => {
                 let mood = "Neutral";
-                if (value >= 70) mood = "Positive";
-                else if (value < 40) mood = "Negative";
+                if (Number(value) >= 70) mood = "Positive";
+                else if (Number(value) < 40) mood = "Negative";
                 return [`${value}/100 (${mood})`, "Sentiment"];
               }}
             />
