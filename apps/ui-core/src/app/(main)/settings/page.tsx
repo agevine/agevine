@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { User, Key, Download, CheckCircle2, XCircle, Save } from "lucide-react";
+import type { SystemStatus } from "@/lib/types";
+import { API_URL } from "@/lib/api";
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState<"profile" | "integrations" | "data">("profile");
@@ -13,13 +15,13 @@ export default function SettingsPage() {
   const [profileMessage, setProfileMessage] = useState("");
 
   // System Status State
-  const [systemStatus, setSystemStatus] = useState<any>(null);
+  const [systemStatus, setSystemStatus] = useState<SystemStatus | null>(null);
 
   useEffect(() => {
     let mounted = true;
     const fetchData = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
+        const apiUrl = API_URL;
         
         // Fetch User
         const userRes = await fetch(`${apiUrl}/api/user`);
@@ -51,7 +53,7 @@ export default function SettingsPage() {
     setSavingProfile(true);
     setProfileMessage("");
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
+      const apiUrl = API_URL;
       const res = await fetch(`${apiUrl}/api/user`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -71,7 +73,7 @@ export default function SettingsPage() {
   };
 
   const handleExport = () => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
+    const apiUrl = API_URL;
     window.open(`${apiUrl}/api/system/export`, "_blank");
   };
 

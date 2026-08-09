@@ -2,18 +2,20 @@ import { VitalsChart } from "@/components/VitalsChart";
 import { PatientSelector } from "@/components/PatientSelector";
 import { VoiceCheckInCard } from "@/components/VoiceCheckInCard";
 import { ContactDoctorButton } from "@/components/ContactDoctorButton";
+import type { AlertEvent } from "@/lib/types";
+import { API_URL } from "@/lib/api";
 
-export default async function Dashboard({ searchParams }: { searchParams: any }) {
+export default async function Dashboard({ searchParams }: { searchParams: Promise<{ patientId?: string }> }) {
   // Await searchParams for Next.js 15+ compatibility
   const params = await searchParams;
   const patientId = params?.patientId || '';
 
   let vitals = null;
   let allPatients = [];
-  let activityLog: any[] = [];
+  let activityLog: AlertEvent[] = [];
 
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
+    const apiUrl = API_URL;
     // Fetch all patients for the dropdown
     const patientsRes = await fetch(`${apiUrl}/api/patients`, { cache: 'no-store' });
     if (patientsRes.ok) {

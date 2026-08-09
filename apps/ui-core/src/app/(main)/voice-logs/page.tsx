@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { Mic, PhoneCall, Play, Clock, CheckCircle2, AlertTriangle, Loader2 } from "lucide-react";
 import { SentimentChart } from "@/components/SentimentChart";
+import type { VoiceLog } from "@/lib/types";
+import { API_URL } from "@/lib/api";
 
 // Helper to parse raw transcript into chat bubbles
 function parseTranscript(text: string) {
@@ -27,7 +29,7 @@ function parseTranscript(text: string) {
 }
 
 export default function VoiceLogsPage() {
-  const [logs, setLogs] = useState<any[]>([]);
+  const [logs, setLogs] = useState<VoiceLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedLogId, setSelectedLogId] = useState<number | null>(null);
 
@@ -35,7 +37,7 @@ export default function VoiceLogsPage() {
     let mounted = true;
     async function fetchLogs() {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
+        const apiUrl = API_URL;
         const res = await fetch(`${apiUrl}/api/voice-logs`);
         if (res.ok) {
           const data = await res.json();
@@ -84,7 +86,6 @@ export default function VoiceLogsPage() {
               <div className="font-semibold text-gray-900 px-2 sticky top-0 bg-[#fafafa] py-2 z-10">Recent Calls</div>
               {logs.map((log) => {
                 const dateStr = new Date(log.timestamp).toLocaleDateString();
-                const timeStr = new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 const isSelected = selectedLogId === log.id;
                 
                 return (
@@ -125,17 +126,17 @@ export default function VoiceLogsPage() {
                         </p>
                       </div>
                       <div className="flex items-center space-x-3">
-                        {selectedLog.sentimentScore >= 70 ? (
+                        {selectedLog.sentimentScore != null && selectedLog.sentimentScore >= 70 ? (
                           <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">
                             <CheckCircle2 className="w-4 h-4 mr-1.5" /> Positive ({selectedLog.sentimentScore})
                           </span>
-                        ) : selectedLog.sentimentScore <= 39 ? (
+                        ) : selectedLog.sentimentScore != null && selectedLog.sentimentScore <= 39 ? (
                           <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">
                             <AlertTriangle className="w-4 h-4 mr-1.5" /> Negative ({selectedLog.sentimentScore})
                           </span>
                         ) : (
                           <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700">
-                            <Clock className="w-4 h-4 mr-1.5" /> Neutral ({selectedLog.sentimentScore})
+                            <Clock className="w-4 h-4 mr-1.5" /> Neutral ({selectedLog.sentimentScore ?? 'N/A'})
                           </span>
                         )}
                         <button className="p-3 bg-forest text-white rounded-full hover:bg-forest/90 transition-colors shadow-sm">

@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { Bell, ShieldAlert, CheckCircle2, Activity, Smartphone, Mail, Globe } from "lucide-react";
+import type { AlertRule, AlertEvent } from "@/lib/types";
+import { API_URL } from "@/lib/api";
 
 export default function AlertsPage() {
-  const [rules, setRules] = useState<any[]>([]);
-  const [history, setHistory] = useState<any[]>([]);
+  const [rules, setRules] = useState<AlertRule[]>([]);
+  const [history, setHistory] = useState<AlertEvent[]>([]);
   const [loading, setLoading] = useState(true);
 
   // New Rule Form State
@@ -16,7 +18,7 @@ export default function AlertsPage() {
   const [destination, setDestination] = useState("");
 
   const loadAlertsData = async (signal?: AbortSignal) => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
+    const apiUrl = API_URL;
     const [rulesRes, historyRes] = await Promise.all([
       fetch(`${apiUrl}/api/alerts/rules?patientId=1`, { signal }),
       fetch(`${apiUrl}/api/alerts/history?patientId=1`, { signal })
@@ -39,8 +41,8 @@ export default function AlertsPage() {
           const historyData = await historyRes.json();
           if (mounted) setHistory(historyData);
         }
-      } catch (e: any) {
-        if (e.name !== 'AbortError') console.error(e);
+      } catch (e: unknown) {
+        if (e instanceof Error && e.name !== 'AbortError') console.error(e);
       } finally {
         if (mounted) setLoading(false);
       }
@@ -53,7 +55,7 @@ export default function AlertsPage() {
       const { rulesRes, historyRes } = await loadAlertsData();
       if (rulesRes.ok) setRules(await rulesRes.json());
       if (historyRes.ok) setHistory(await historyRes.json());
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error(e);
     }
   };
@@ -61,7 +63,7 @@ export default function AlertsPage() {
   const createRule = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
+      const apiUrl = API_URL;
       await fetch(`${apiUrl}/api/alerts/rules`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -76,7 +78,7 @@ export default function AlertsPage() {
 
   const deleteRule = async (id: number) => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
+      const apiUrl = API_URL;
       await fetch(`${apiUrl}/api/alerts/rules/${id}`, { method: "DELETE" });
       loadAlerts();
     } catch (error) {

@@ -3,7 +3,7 @@
 import { ResponsiveContainer, AreaChart, Area, XAxis, Tooltip } from "recharts";
 
 type MetricChartProps = {
-  data: any[];
+  data: { time: string; [key: string]: number | string }[];
   color: string;
   dataKey: string;
 };

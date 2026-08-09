@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { Battery, Activity, Smartphone, Phone, AlertCircle, X, Trash2, Key } from "lucide-react";
+import type { Patient } from "@/lib/types";
+import { API_URL } from "@/lib/api";
 
 export default function PatientsPage() {
-  const [patients, setPatients] = useState<any[]>([]);
+  const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
@@ -16,7 +18,7 @@ export default function PatientsPage() {
   const [timezone, setTimezone] = useState("UTC");
 
   const loadPatientsData = async (signal?: AbortSignal) => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
+    const apiUrl = API_URL;
     return await fetch(`${apiUrl}/api/patients`, { signal });
   };
 
@@ -30,8 +32,8 @@ export default function PatientsPage() {
           const data = await res.json();
           if (mounted) setPatients(data);
         }
-      } catch (e: any) {
-        if (e.name !== 'AbortError') console.error("Failed to load patients", e);
+      } catch (e: unknown) {
+        if (e instanceof Error && e.name !== 'AbortError') console.error("Failed to load patients", e);
       } finally {
         if (mounted) setLoading(false);
       }
@@ -51,7 +53,7 @@ export default function PatientsPage() {
   const addPatient = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
+      const apiUrl = API_URL;
       await fetch(`${apiUrl}/api/patients`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -69,7 +71,7 @@ export default function PatientsPage() {
 
   const deletePatient = async (id: number) => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
+      const apiUrl = API_URL;
       await fetch(`${apiUrl}/api/patients/${id}`, { method: "DELETE" });
       loadPatients();
     } catch (error) {

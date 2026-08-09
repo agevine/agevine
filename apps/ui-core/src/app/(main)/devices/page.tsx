@@ -2,14 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { Smartphone, Battery, Activity, WifiOff, Plus, X, Watch, Info } from "lucide-react";
+import type { Patient } from "@/lib/types";
+import { API_URL } from "@/lib/api";
 
 export default function DevicesPage() {
-  const [patients, setPatients] = useState<any[]>([]);
+  const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const loadPatientsData = async (signal?: AbortSignal) => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
+    const apiUrl = API_URL;
     return await fetch(`${apiUrl}/api/patients`, { signal });
   };
 
@@ -23,8 +25,8 @@ export default function DevicesPage() {
           const data = await res.json();
           if (mounted) setPatients(data);
         }
-      } catch (e: any) {
-        if (e.name !== 'AbortError') console.error("Failed to load devices", e);
+      } catch (e: unknown) {
+        if (e instanceof Error && e.name !== 'AbortError') console.error("Failed to load devices", e);
       } finally {
         if (mounted) setLoading(false);
       }

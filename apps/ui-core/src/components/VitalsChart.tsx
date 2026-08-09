@@ -2,15 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { API_URL } from "@/lib/api";
+import type { ChartDataPoint } from "@/lib/types";
 
 export function VitalsChart({ patientId }: { patientId?: string | number }) {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<ChartDataPoint[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchHistory() {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
+        const apiUrl = API_URL;
         const url = patientId 
           ? `${apiUrl}/api/vitals/history?patientId=${patientId}` 
           : `${apiUrl}/api/vitals/history`;

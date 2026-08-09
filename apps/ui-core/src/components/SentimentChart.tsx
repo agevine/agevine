@@ -3,8 +3,9 @@
 import { useMemo } from "react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Mic } from "lucide-react";
+import type { VoiceLog } from "@/lib/types";
 
-export function SentimentChart({ logs }: { logs: any[] }) {
+export function SentimentChart({ logs }: { logs: VoiceLog[] }) {
   const chartData = useMemo(() => {
     if (!logs || logs.length === 0) return [];
     
