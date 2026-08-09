@@ -3,7 +3,9 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { db } from "./db";
 import { vitalsLogs, voiceLogs, patients, waitlist, alertRules, alertEvents, iotEvents, users } from "./db/schema";
-import { desc, eq, and } from "drizzle-orm";
+import { desc, eq, and, type InferSelectModel } from "drizzle-orm";
+
+type AlertRuleRow = InferSelectModel<typeof alertRules>;
 
 dotenv.config();
 
@@ -25,7 +27,7 @@ app.get('/health', (req: Request, res: Response) => {
 });
 
 // Alerts Engine: Notification Dispatchers
-async function sendNotification(rule: any, message: string) {
+async function sendNotification(rule: AlertRuleRow, message: string) {
   try {
     if (rule.channel === 'email') {
       const sgApiKey = process.env.SENDGRID_API_KEY;
@@ -75,7 +77,7 @@ async function sendNotification(rule: any, message: string) {
 }
 
 // Alerts Engine: Evaluator Logic
-async function evaluateAlerts(patientId: number, data: any) {
+async function evaluateAlerts(patientId: number, data: Record<string, number | null>) {
   try {
     // Fetch all enabled rules for this patient
     const rules = await db.select().from(alertRules).where(and(eq(alertRules.patientId, patientId), eq(alertRules.enabled, true)));
@@ -543,9 +545,9 @@ app.post('/api/v1/waitlist', async (req: Request, res: Response): Promise<any> =
 
     console.log(`[Waitlist] New signup: ${email}`);
     return res.status(201).json({ message: 'Successfully joined waitlist' });
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Check for unique constraint violation (duplicate email)
-    if (error.code === '23505') {
+    if (error instanceof Error && 'code' in error && (error as { code: string }).code === '23505') {
       return res.status(409).json({ error: 'Email is already on the waitlist' });
     }
     console.error('Failed to join waitlist:', error);

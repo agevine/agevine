@@ -1,17 +1,19 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Bell, Search } from "lucide-react";
+import { Bell } from "lucide-react";
+import type { AlertEvent } from "@/lib/types";
+import { API_URL } from "@/lib/api";
 
 export function Topbar() {
-  const [alerts, setAlerts] = useState<any[]>([]);
+  const [alerts, setAlerts] = useState<AlertEvent[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function fetchAlerts() {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
+        const apiUrl = API_URL;
         const res = await fetch(`${apiUrl}/api/alerts/history`);
         if (res.ok) {
           const data = await res.json();

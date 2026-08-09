@@ -1,8 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import type { Patient } from "@/lib/types";
 
-export function PatientSelector({ patients, currentPatientId }: { patients: any[], currentPatientId: number }) {
+export function PatientSelector({ patients, currentPatientId }: { patients: Patient[], currentPatientId: number }) {
   const router = useRouter();
   
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

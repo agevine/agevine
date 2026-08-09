@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Users, Mic, Settings, Leaf, Bell, BookOpen, Code, Watch } from "lucide-react";
+import { API_URL } from "@/lib/api";
 
 const navigation = [
   { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
@@ -23,7 +24,7 @@ export function Sidebar() {
     let mounted = true;
     const fetchUser = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
+        const apiUrl = API_URL;
         const res = await fetch(`${apiUrl}/api/user`, { cache: 'no-store' });
         if (res.ok) {
           const user = await res.json();
