@@ -5,7 +5,7 @@ This is the frontend Next.js application that serves as the primary dashboard fo
 ## Tech Stack
 - **Framework:** Next.js (App Router)
 - **Language:** TypeScript
-- **Styling:** Vanilla CSS (Premium Dark Theme with Glassmorphism)
+- **Styling:** tailwind 
 
 ## Development Setup
 
@@ -18,7 +18,7 @@ This is the frontend Next.js application that serves as the primary dashboard fo
    ```bash
    npm run dev
    ```
-   The application will be available at `http://localhost:3000`.
+   The application will be available at `http://localhost:3001`.
 
 ## Design Philosophy
 
@@ -40,7 +40,7 @@ docker-compose up -d
 ```
 
 That's it! 
-- Your dashboard is now live at `http://localhost:3000`
-- Your API Gateway is now live at `http://localhost:3001`
+- Your dashboard is now live at `http://localhost:3001`
+- Your API Gateway is now live at `http://localhost:3005`
 
 **Default Admin Password**: `agevine`

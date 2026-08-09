@@ -31,15 +31,17 @@ export default function Page() {
       <div style={{ backgroundColor: '#1e293b', color: '#f8fafc', padding: '1.5rem', borderRadius: '12px', marginTop: '1.5rem', overflowX: 'auto' }}>
         <code style={{ fontFamily: 'monospace' }}>
           # 1. Clone the repository{'\n'}
-          git clone https://github.com/yourusername/agevine-oss.git{'\n'}
-          cd agevine-oss/oss{'\n\n'}
+          git clone https://github.com/agevine/agevine.git{'\n'}
+          {'\n'}
+          cd agevine{'\n\n'}
+          {'\n'}
           # 2. Boot up the entire stack{'\n'}
           docker-compose up -d
         </code>
       </div>
 
       <h3 style={{ marginTop: '2rem' }}>Accessing the Dashboard</h3>
-      <p>Once the Docker containers are running, simply open your browser and navigate to <strong>http://localhost:3000</strong>. The default administrator password is <code>agevine</code>.</p>
+      <p>Once the Docker containers are running, simply open your browser and navigate to <strong>http://localhost:3001</strong>. The default administrator password is <code>agevine</code>.</p>
     </div>
   )
 }

@@ -34,7 +34,7 @@ export default async function PatientProfilePage({ params }: { params: { id: str
         </p>
         <div className="bg-slate-900 rounded-lg p-4 font-mono text-sm text-green-400 overflow-x-auto shadow-inner">
           <div className="mb-2"><span className="text-slate-400">// Base Webhook URL</span></div>
-          <div className="mb-4">POST http://localhost:3001/api/v1/wearables/webhook</div>
+          <div className="mb-4">POST http://localhost:3005/api/v1/wearables/webhook</div>
           
           <div className="mb-2"><span className="text-slate-400">// Required JSON Payload Structure</span></div>
           <div>{`{`}</div>

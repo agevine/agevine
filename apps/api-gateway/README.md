@@ -31,7 +31,7 @@ This is the core backend service for the Agevine Open-Source ecosystem. It is a 
    ```bash
    npm run dev
    ```
-   The server will start on `http://localhost:3001` with hot-reloading enabled.
+   The server will start on `http://localhost:3005` with hot-reloading enabled.
 
 ## ⚡ 1-Click Installation (Docker)
 
@@ -47,7 +47,7 @@ docker-compose up -d
 ```
 
 That's it! 
-- Your dashboard is now live at `http://localhost:3000`
-- Your API Gateway is now live at `http://localhost:3001`
+- Your dashboard is now live at `http://localhost:3001`
+- Your API Gateway is now live at `http://localhost:3005`
 
 **Default Admin Password**: `agevine`

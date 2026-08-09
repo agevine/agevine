@@ -21,7 +21,7 @@ export default function VoicePage() {
           {`import { AgevineVoiceClient } from '@agevine/voice';
 
 const client = new AgevineVoiceClient({ 
-  endpoint: 'http://localhost:3001' 
+  endpoint: 'http://localhost:3005' 
 });
 
 // Log the call summary and sentiment
