@@ -16,7 +16,7 @@ Use this SDK to push Apple Watch, Fitbit, or Garmin health vitals directly into 
 import { AgevineClient, OuraAdapter } from '@agevine/wearables';
 
 const client = new AgevineClient({
-  endpoint: 'http://localhost:3001' // Your Agevine API Gateway URL
+  endpoint: 'http://localhost:3005' // Your Agevine API Gateway URL
 });
 
 // 1. Sync Vitals via REST

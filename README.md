@@ -39,8 +39,8 @@ docker-compose up -d
 ```
 
 That's it! 
-- Your dashboard is now live at `http://localhost:3000`
-- Your API Gateway is now live at `http://localhost:3001`
+- Your dashboard is now live at `http://localhost:3001`
+- Your API Gateway is now live at `http://localhost:3005`
 - Your Docs is now live at `http://localhost:3002`
 
 **Default Admin Password**: `agevine`
@@ -71,7 +71,7 @@ Use this SDK in your companion apps to stream live IoT vitals. It includes OAuth
 ```typescript
 import { AgevineClient } from '@agevine/wearables';
 
-const client = new AgevineClient({ endpoint: 'http://localhost:3001' });
+const client = new AgevineClient({ endpoint: 'http://localhost:3005' });
 
 // REST Sync
 await client.syncVitals({ patientId: 1, heartRate: 72, steps: 3500 });
@@ -85,7 +85,7 @@ Use this SDK in your AI Voice webhook handlers (like Retell AI or Bland AI).
 ```typescript
 import { AgevineVoiceClient } from '@agevine/voice';
 
-const client = new AgevineVoiceClient({ endpoint: 'http://localhost:3001' });
+const client = new AgevineVoiceClient({ endpoint: 'http://localhost:3005' });
 await client.logCall({ patientId: 1, sentimentScore: 85, summary: "Feeling well." });
 ```
 
@@ -94,7 +94,7 @@ Use this SDK to route MQTT messages from your smart home hubs into Agevine.
 ```typescript
 import { IOTClient } from '@agevine/iot';
 
-const client = new IOTClient({ endpoint: 'http://localhost:3001' });
+const client = new IOTClient({ endpoint: 'http://localhost:3005' });
 await client.logSensorEvent({ patientId: 1, deviceType: "motion_sensor", reading: 1 });
 ```
 
@@ -107,3 +107,5 @@ For detailed guides on how to build custom hardware integrations or deploy Agevi
 ## 📄 License
 The Agevine core platform (Dashboard and API) is licensed under **AGPLv3**. 
 The Agevine SDKs (`@agevine/voice` and `@agevine/wearables`) are licensed under **MIT** so you can safely integrate them into proprietary applications.
+
+

@@ -16,7 +16,7 @@ Use this SDK to push call transcripts, summaries, and sentiment scores into your
 import { AgevineVoiceClient, OpenAIVoiceAdapter } from '@agevine/voice';
 
 const client = new AgevineVoiceClient({
-  endpoint: 'http://localhost:3001', // Your Agevine API Gateway URL
+  endpoint: 'http://localhost:3005', // Your Agevine API Gateway URL
   openAiApiKey: process.env.OPENAI_API_KEY // Enables real TTS synthesis
 });
 

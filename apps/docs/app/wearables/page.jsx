@@ -22,7 +22,7 @@ export default function WearablesPage() {
 
 // 1. Connect to your self-hosted API Gateway
 const client = new AgevineWearableClient({ 
-  endpoint: 'http://localhost:3001' 
+  endpoint: 'http://localhost:3005' 
 });
 
 // 2. Push vitals directly to the patient's dashboard
