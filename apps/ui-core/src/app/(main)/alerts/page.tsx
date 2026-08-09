@@ -95,31 +95,31 @@ export default function AlertsPage() {
           <Bell className="w-8 h-8 text-forest" />
           Alerts Engine
         </h1>
-        <p className="text-gray-500 font-medium">Configure automated notifications for critical health events.</p>
+        <p className="text-zinc-500 font-medium">Configure automated notifications for critical health events.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* Active Rules Column */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <h2 className="text-lg font-bold text-gray-900 mb-6 border-b border-gray-100 pb-4">Active Alert Rules</h2>
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-zinc-200/60">
+            <h2 className="text-lg font-bold text-zinc-900 mb-6 border-b border-zinc-100 pb-4">Active Alert Rules</h2>
             
             {rules.length === 0 ? (
-              <p className="text-gray-500 text-sm text-center py-8">No active rules configured.</p>
+              <p className="text-zinc-500 text-sm text-center py-8">No active rules configured.</p>
             ) : (
               <div className="space-y-4">
                 {rules.map((rule) => (
-                  <div key={rule.id} className="flex justify-between items-center p-4 border border-gray-100 rounded-xl hover:border-gray-200 transition-colors">
+                  <div key={rule.id} className="flex justify-between items-center p-4 border border-zinc-100 rounded-lg hover:border-zinc-200/60 transition-colors">
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-forest/10 flex items-center justify-center text-forest">
+                      <div className="w-10 h-10 rounded-md bg-forest/10 flex items-center justify-center text-forest">
                         <Activity className="w-5 h-5" />
                       </div>
                       <div>
-                        <p className="font-bold text-gray-900 text-sm">
+                        <p className="font-bold text-zinc-900 text-sm">
                           If {rule.metric} is {rule.condition === 'gt' ? '>' : rule.condition === 'lt' ? '<' : '=='} {rule.threshold}
                         </p>
-                        <p className="text-gray-500 text-xs font-medium flex items-center gap-1 mt-1">
+                        <p className="text-zinc-500 text-xs font-medium flex items-center gap-1 mt-1">
                           {rule.channel === 'sms' ? <Smartphone className="w-3 h-3" /> : rule.channel === 'email' ? <Mail className="w-3 h-3" /> : <Globe className="w-3 h-3" />}
                           Send {rule.channel} to {rule.destination}
                         </p>
@@ -127,7 +127,7 @@ export default function AlertsPage() {
                     </div>
                     <button 
                       onClick={() => deleteRule(rule.id)}
-                      className="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors text-sm font-semibold"
+                      className="text-red-500 hover:bg-red-50 p-2 rounded-md transition-colors text-sm font-semibold"
                     >
                       Remove
                     </button>
@@ -138,36 +138,36 @@ export default function AlertsPage() {
           </div>
 
           {/* Alert History */}
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <h2 className="text-lg font-bold text-gray-900 mb-6 border-b border-gray-100 pb-4">Recent Triggers</h2>
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-zinc-200/60">
+            <h2 className="text-lg font-bold text-zinc-900 mb-6 border-b border-zinc-100 pb-4">Recent Triggers</h2>
             <div className="space-y-0">
               {history.map((event) => (
-                <div key={event.id} className="py-4 border-b border-gray-50 last:border-0 flex items-start gap-4">
+                <div key={event.id} className="py-4 border-b border-zinc-50 last:border-0 flex items-start gap-4">
                   <div className={`mt-0.5 w-2 h-2 rounded-full flex-shrink-0 ${event.status === 'sent' ? 'bg-forest' : 'bg-red-500'}`} />
                   <div>
-                    <p className="text-sm font-medium text-gray-900 leading-snug">{event.message}</p>
-                    <p className="text-xs text-gray-400 font-medium mt-1">
+                    <p className="text-sm font-medium text-zinc-900 leading-snug">{event.message}</p>
+                    <p className="text-xs text-zinc-400 font-medium mt-1">
                       {new Date(event.createdAt).toLocaleString()} • Sent via {event.channel}
                     </p>
                   </div>
                 </div>
               ))}
-              {history.length === 0 && <p className="text-gray-500 text-sm py-4">No recent alerts triggered.</p>}
+              {history.length === 0 && <p className="text-zinc-500 text-sm py-4">No recent alerts triggered.</p>}
             </div>
           </div>
         </div>
 
         {/* Create Rule Column */}
         <div className="lg:col-span-1">
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 sticky top-10">
-            <h2 className="text-lg font-bold text-gray-900 mb-6">Create New Rule</h2>
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-zinc-200/60 sticky top-10">
+            <h2 className="text-lg font-bold text-zinc-900 mb-6">Create New Rule</h2>
             
             <form onSubmit={createRule} className="space-y-5">
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Metric</label>
+                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Metric</label>
                 <select 
                   value={metric} onChange={e => setMetric(e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg p-3 text-sm font-medium focus:ring-2 focus:ring-forest focus:border-forest outline-none"
+                  className="w-full border border-zinc-200 rounded-lg p-3 text-sm font-medium focus:ring-2 focus:ring-forest focus:border-forest outline-none bg-white"
                 >
                   <option value="heartRate">Heart Rate (bpm)</option>
                   <option value="steps">Step Count</option>
@@ -178,10 +178,10 @@ export default function AlertsPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Condition</label>
+                  <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Condition</label>
                   <select 
                     value={condition} onChange={e => setCondition(e.target.value)}
-                    className="w-full border border-gray-200 rounded-lg p-3 text-sm font-medium focus:ring-2 focus:ring-forest outline-none"
+                    className="w-full border border-zinc-200 rounded-lg p-3 text-sm font-medium focus:ring-2 focus:ring-forest outline-none bg-white"
                   >
                     <option value="gt">Greater Than</option>
                     <option value="lt">Less Than</option>
@@ -189,20 +189,20 @@ export default function AlertsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Value</label>
+                  <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Value</label>
                   <input 
                     type="number" value={threshold} onChange={e => setThreshold(e.target.value)} required
-                    className="w-full border border-gray-200 rounded-lg p-3 text-sm font-medium focus:ring-2 focus:ring-forest outline-none"
+                    className="w-full border border-zinc-200 rounded-lg p-3 text-sm font-medium focus:ring-2 focus:ring-forest outline-none"
                     placeholder="100"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Delivery Channel</label>
+                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Delivery Channel</label>
                 <select 
                   value={channel} onChange={e => setChannel(e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg p-3 text-sm font-medium focus:ring-2 focus:ring-forest outline-none"
+                  className="w-full border border-zinc-200 rounded-lg p-3 text-sm font-medium focus:ring-2 focus:ring-forest outline-none bg-white"
                 >
                   <option value="sms">SMS Text Message</option>
                   <option value="email">Email Notification</option>
@@ -211,17 +211,17 @@ export default function AlertsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Destination</label>
+                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Destination</label>
                 <input 
                   type="text" value={destination} onChange={e => setDestination(e.target.value)} required
-                  className="w-full border border-gray-200 rounded-lg p-3 text-sm font-medium focus:ring-2 focus:ring-forest outline-none"
+                  className="w-full border border-zinc-200 rounded-lg p-3 text-sm font-medium focus:ring-2 focus:ring-forest outline-none"
                   placeholder={channel === 'email' ? 'doctor@hospital.com' : channel === 'sms' ? '+15551234567' : 'https://hooks.slack.com/...'}
                 />
               </div>
 
               <button 
                 type="submit"
-                className="w-full bg-forest hover:bg-[#0F4C3A] text-white font-bold py-3 px-4 rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2 mt-4"
+                className="w-full bg-forest hover:bg-[#0F4C3A] text-white font-bold py-2.5 px-4 rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 mt-4"
               >
                 <CheckCircle2 className="w-5 h-5" />
                 Save Alert Rule

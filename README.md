@@ -18,7 +18,7 @@
 ## The Core Platform
 The core open-source platform is a monorepo that consists of:
 - **`api-gateway`**: A central Express.js / TypeScript API that acts as the source of truth, funneling all data into Postgres using Drizzle ORM.
-- **`ui-core`**: A fully responsive, modern Next.js + Tailwind CSS Family Dashboard to view your loved one's health data.
+- **`ui-core`**: A fully responsive, modern Next.js + Tailwind CSS Family Dashboard to view your loved one's health data. Includes real-time vitals streaming, IoT alert management, and **Voice Sentiment Trend Analysis**.
 - **`packages/wearables`**: SDKs to connect Apple HealthKit, Garmin, and Fitbit streams.
 - **`packages/voice`**: SDKs to connect Voice AI platforms (Retell, Vapi) and synthesize photorealistic speech (OpenAI TTS).
 - **`packages/iot`**: SDKs to integrate smart home sensors, fall mats, and BLE devices via MQTT.
