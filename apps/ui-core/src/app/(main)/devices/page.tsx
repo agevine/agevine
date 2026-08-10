@@ -40,7 +40,7 @@ export default function DevicesPage() {
 
   const totalDevices = patients.length;
   const onlineDevices = patients.filter(p => p.deviceStatus === 'Online').length;
-  const lowBatteryDevices = patients.filter(p => p.deviceBattery < 20).length;
+  const lowBatteryDevices = patients.filter(p => (p.deviceBattery ?? 0) < 20).length;
 
   return (
     <div className="flex-1 p-10 bg-[#fafafa]">
@@ -106,7 +106,7 @@ export default function DevicesPage() {
           </thead>
           <tbody className="divide-y divide-zinc-100">
             {patients.map((patient) => {
-              const isLowBattery = patient.deviceBattery < 20;
+              const isLowBattery = (patient.deviceBattery ?? 0) < 20;
               const isOffline = patient.deviceStatus !== 'Online';
               
               return (
@@ -135,11 +135,11 @@ export default function DevicesPage() {
                       <div className="w-16 h-2 bg-zinc-100 rounded-full overflow-hidden">
                         <div 
                           className={`h-full rounded-full ${isLowBattery ? 'bg-red-500' : 'bg-emerald-500'}`} 
-                          style={{ width: `${patient.deviceBattery}%` }}
+                          style={{ width: `${patient.deviceBattery ?? 0}%` }}
                         />
                       </div>
                       <span className={`font-bold text-sm ${isLowBattery ? 'text-red-500' : 'text-zinc-600'}`}>
-                        {patient.deviceBattery}%
+                        {patient.deviceBattery ?? 0}%
                       </span>
                     </div>
                   </td>

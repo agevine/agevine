@@ -152,7 +152,7 @@ export default function VoiceLogsPage() {
                         </span>
                       </div>
                       
-                      {parseTranscript(selectedLog.transcript).map((line, i) => (
+                      {parseTranscript(selectedLog.transcript ?? '').map((line, i) => (
                         <div key={i} className={`flex flex-col ${line.speaker === 'AI' ? 'items-end' : 'items-start'}`}>
                           <span className="text-xs text-zinc-400 mb-1 px-1 font-bold">{line.speaker}</span>
                           <div className={`max-w-[80%] rounded-2xl px-5 py-3 shadow-sm ${
