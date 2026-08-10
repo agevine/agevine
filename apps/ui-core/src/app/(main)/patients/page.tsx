@@ -153,8 +153,8 @@ export default function PatientsPage() {
                 <Smartphone className="w-4 h-4 mr-2" />
                 Apple Watch / Oura
                 <div className="mx-2 w-1 h-1 bg-gray-300 rounded-full" />
-                <Battery className={`w-4 h-4 mr-1 ${member.deviceBattery < 20 ? 'text-red-500' : 'text-emerald-500'}`} />
-                <span className={member.deviceBattery < 20 ? 'text-red-500 font-medium' : ''}>{member.deviceBattery}%</span>
+                <Battery className={`w-4 h-4 mr-1 ${(member.deviceBattery ?? 0) < 20 ? 'text-red-500' : 'text-emerald-500'}`} />
+                <span className={(member.deviceBattery ?? 0) < 20 ? 'text-red-500 font-medium' : ''}>{member.deviceBattery ?? 0}%</span>
               </div>
             </div>
           </div>
