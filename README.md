@@ -7,6 +7,7 @@
   [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
   [![NPM Voice SDK](https://img.shields.io/npm/v/@agevine/voice?label=%40agevine%2Fvoice)](https://www.npmjs.com/package/@agevine/voice)
   [![NPM Wearables SDK](https://img.shields.io/npm/v/@agevine/wearables?label=%40agevine%2Fwearables)](https://www.npmjs.com/package/@agevine/wearables)
+[![NPM Iot SDK](https://img.shields.io/npm/v/@agevine/wearables?label=%40agevine%2Fwearables)](https://www.npmjs.com/package/@agevine/iot)
 </div>
 
 <br />
